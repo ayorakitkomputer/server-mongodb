@@ -12,7 +12,7 @@ async function connect() {
 			useUnifiedTopology: true,
 		});
 		await client.connect();
-		const db = await client.db("partspicker");
+		const db = await client.db("testing-partspicker"); // partspicker   === ini yg bukan testing
 
 		database = db;
 		return db;

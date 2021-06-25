@@ -11,10 +11,11 @@ const indexRouter = require("./routes/index");
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+// jourdy
+const router = require('./routes')
+app.use(router)
+//
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-});
 
 app.use(indexRouter);
 

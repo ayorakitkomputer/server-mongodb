@@ -1,22 +1,14 @@
-function gpuValidation(data) {
+function caseFanValidation(data) {
   let validated = true;
   let errors = "";
-  if (
-    !data.name ||
-    !data.image ||
-    !data.manufacturer ||
-    !data.tdp ||
-    !data.price ||
-    !data.stock
-  ) {
+  if (!data.name || !data.image || !data.size || !data.price || !data.stock) {
     validated = false;
     errors = "All Field Required";
     return { errors, validated };
   } else if (
     typeof data.name === "string" &&
     typeof data.image === "string" &&
-    typeof data.manufacturer === "string" &&
-    typeof data.tdp === "number" &&
+    typeof data.size === "number" &&
     typeof data.price === "number" &&
     typeof data.stock === "number"
   ) {
@@ -28,4 +20,4 @@ function gpuValidation(data) {
   }
 }
 
-module.exports = gpuValidation;
+module.exports = caseFanValidation;

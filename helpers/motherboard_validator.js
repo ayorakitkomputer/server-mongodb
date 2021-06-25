@@ -1,11 +1,13 @@
-function gpuValidation(data) {
+function motherboardValidation(data) {
   let validated = true;
   let errors = "";
   if (
     !data.name ||
     !data.image ||
+    !data.socket ||
+    !data.memory_type ||
     !data.manufacturer ||
-    !data.tdp ||
+    !data.form_factor ||
     !data.price ||
     !data.stock
   ) {
@@ -15,8 +17,10 @@ function gpuValidation(data) {
   } else if (
     typeof data.name === "string" &&
     typeof data.image === "string" &&
+    typeof data.socket === "string" &&
+    typeof data.memory_type === "string" &&
     typeof data.manufacturer === "string" &&
-    typeof data.tdp === "number" &&
+    typeof data.form_factor === "string" &&
     typeof data.price === "number" &&
     typeof data.stock === "number"
   ) {
@@ -28,4 +32,4 @@ function gpuValidation(data) {
   }
 }
 
-module.exports = gpuValidation;
+module.exports = motherboardValidation;

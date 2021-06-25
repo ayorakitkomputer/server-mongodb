@@ -8,7 +8,7 @@ class Builds {
 	}
 
 	static findByUser(UserId) {
-		return getDatabase().collection(collectionName).findOne({ "user.id": UserId });
+		return getDatabase().collection(collectionName).find({ "user.id": UserId }).toArray();
 	}
 
 	static findByPk(id) {

@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
 			.then((data) => {
 				if (data) {
 					let { _id, email, firstname, lastname } = data;
-					req.current_user = { id: _id, email, firstname, lastname };
+					req.currentUser = { id: _id, email, firstname, lastname };
 					next();
 				} else {
 					res.status(400).json({ message: "Invalid Token" });

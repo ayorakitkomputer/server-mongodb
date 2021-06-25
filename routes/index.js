@@ -12,6 +12,7 @@ const cpuRouter = require("./cpu_routes");
 const storageRouter = require("./storage_routes");
 const powerSupplyRouter = require("./power_supply_routes");
 const monitorRouter = require("./monitor_routes");
+const historyRoutes = require("./history_routes");
 
 const authentication = require("../middlewares/authentication");
 
@@ -26,5 +27,6 @@ router.use("/motherboard", motherboardRoutes);
 router.use("/case", caseRoutes);
 router.use("/memory", memoryRoutes);
 router.use("/caseFan", caseFanRoutes);
+router.use("/history", authentication, historyRoutes);
 
 module.exports = router;

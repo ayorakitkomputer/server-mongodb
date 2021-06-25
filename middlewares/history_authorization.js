@@ -1,11 +1,11 @@
-const Builds = require("../models/builds");
+const History = require("../models/history");
 
 module.exports = (req, res, next) => {
 	if (req.params.id) {
 		let id = req.params.id;
-		Builds.findByPk(id)
+		History.findByPk(id)
 			.then((data) => {
-				if (data.UserId === req.current_user.id) {
+				if (data.user.id.toString() === req.currentUser.id.toString()) {
 					next();
 				} else {
 					res.status(400).json({ message: "Unauthorized" });
@@ -15,6 +15,6 @@ module.exports = (req, res, next) => {
 				res.status(500).json({ message: err.message });
 			});
 	} else {
-		res.status(400).json({ message: "Unauthorized" });
+		res.status(400).json({ message: "Page Not Found" });
 	}
 };

@@ -12,7 +12,6 @@ class Gpu {
       .findOne({ _id: ObjectId(id) });
   }
   static create(payload) {
-    console.log(payload, "IN CREATE MODEL GPU");
     return getDatabase().collection(collectionGpu).insertOne(payload);
   }
   static update(filter, updated) {

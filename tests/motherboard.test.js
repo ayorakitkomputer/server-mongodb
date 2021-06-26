@@ -1,10 +1,14 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
+const { createAdmin } = require("./helpers/createAdmin");
+
+let access_token = "";
 
 beforeAll(async () => {
   await connect();
-}, 10000);
+  access_token = await createAdmin();
+}, 15000);
 
 let newProduct = {
   name: "TESTING",
@@ -44,7 +48,7 @@ describe("Create", () => {
   test("Success Case | should send an object with key: _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
     request(app)
       .post("/motherboard")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(newProduct)
       .end((err, res) => {
         if (err) done(err);
@@ -65,7 +69,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .post("/motherboard")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errormemoryEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -77,7 +81,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .post("/motherboard")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errormemoryInputFormat)
       .end((err, res) => {
         if (err) done(err);
@@ -92,10 +96,10 @@ describe("Show all | Success Case", () => {
   test("should send an array of objects with key:  _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
     request(app)
       .get("/motherboard")
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
-        console.log(res.body[0], "res body in ");
         expect(res.body[0]).toHaveProperty("_id", expect.any(String));
         expect(res.body[0]).toHaveProperty("name", expect.any(String));
         expect(res.body[0]).toHaveProperty("image", expect.any(String));
@@ -114,7 +118,7 @@ describe("Update motherboard", () => {
   test("Success Case | should send an object with message", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send({
         name: "TESTING EDIT",
         image: "TESTING",
@@ -135,7 +139,7 @@ describe("Update motherboard", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errormemoryEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -147,7 +151,7 @@ describe("Update motherboard", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errormemoryInputFormat)
       .end((err, res) => {
         if (err) done(err);
@@ -162,6 +166,7 @@ describe("Delete Case | Success motherboard", () => {
   test("should send an object with message", (done) => {
     request(app)
       .delete(`/motherboard/${newId}`)
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(200);

@@ -1,36 +1,13 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
-// const { createAdmin, access_token } = require("./helpers/createAdmin");
-const { sign } = require("../helpers/jwt");
-const Users = require("../models/users");
+const { createAdmin } = require("./helpers/createAdmin");
 
 let access_token = "";
-let userAdmin = {
-  email: "admin@mail.com",
-  password: "password",
-  address: "Jakarta",
-  firstname: "Admin",
-  lastname: "PcPartPicker",
-  role: "Admin",
-};
 
 beforeAll(async () => {
   await connect();
-  Users.create(userAdmin)
-
-    .then((data) => {
-      let newAdmin = {
-        _id: data._id,
-        email: data.email,
-        role: data.role,
-      };
-      access_token = sign(newAdmin);
-      done();
-    })
-    .catch((err) => {
-      done(err);
-    });
+  access_token = await createAdmin();
 }, 15000);
 
 let newProduct = {
@@ -111,6 +88,7 @@ describe("Show all | Success Case", () => {
   test("should send an array of objects with key: _id, name, image, manufacturere, tdp, price, stock", (done) => {
     request(app)
       .get("/gpu")
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
@@ -177,6 +155,7 @@ describe("Delete Case | Success Case", () => {
   test("should send an object with message", (done) => {
     request(app)
       .delete(`/gpu/${newId}`)
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(200);

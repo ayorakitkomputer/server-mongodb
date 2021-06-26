@@ -3,7 +3,7 @@ const { sign } = require("../../helpers/jwt");
 
 let access_token = "";
 
-function createAdmin() {
+async function createAdmin() {
   let userAdmin = {
     email: "admin@mail.com",
     password: "password",
@@ -12,19 +12,14 @@ function createAdmin() {
     lastname: "PcPartPicker",
     role: "Admin",
   };
+  const user = await Users.create(userAdmin);
 
-  Users.create(userAdmin)
-    .then((data) => {
-      let newAdmin = {
-        _id: data._id,
-        email: data.email,
-        role: data.role,
-      };
-      access_token = sign(newAdmin);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  let newAdmin = {
+    id: user.ops[0]._id,
+    email: user.ops[0].email,
+    role: user.ops[0].role,
+  };
+  return (access_token = sign(newAdmin));
 }
 
-module.exports = { createAdmin, access_token };
+module.exports = { createAdmin };

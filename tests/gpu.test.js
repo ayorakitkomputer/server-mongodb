@@ -1,10 +1,37 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
+// const { createAdmin, access_token } = require("./helpers/createAdmin");
+const { sign } = require("../helpers/jwt");
+const Users = require("../models/users");
+
+let access_token = "";
+let userAdmin = {
+  email: "admin@mail.com",
+  password: "password",
+  address: "Jakarta",
+  firstname: "Admin",
+  lastname: "PcPartPicker",
+  role: "Admin",
+};
 
 beforeAll(async () => {
   await connect();
-}, 10000);
+  Users.create(userAdmin)
+
+    .then((data) => {
+      let newAdmin = {
+        _id: data._id,
+        email: data.email,
+        role: data.role,
+      };
+      access_token = sign(newAdmin);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+}, 15000);
 
 let newProduct = {
   name: "TESTING ADD #",
@@ -38,7 +65,7 @@ describe("Create", () => {
   test("Success Case | should send an object with key: _id, name, image, manufacturere, tdp, price, stock", (done) => {
     request(app)
       .post("/gpu")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(newProduct)
       .end((err, res) => {
         if (err) done(err);
@@ -57,7 +84,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .post("/gpu")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -69,7 +96,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .post("/gpu")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
         if (err) done(err);
@@ -103,7 +130,7 @@ describe("Update Case", () => {
   test("Success Case | should send an object with message", (done) => {
     request(app)
       .put(`/gpu/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send({
         name: "TESTING EDIT #",
         image:
@@ -123,7 +150,7 @@ describe("Update Case", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .put(`/gpu/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -135,7 +162,7 @@ describe("Update Case", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .put(`/gpu/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
         if (err) done(err);

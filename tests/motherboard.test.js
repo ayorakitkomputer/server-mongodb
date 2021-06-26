@@ -41,7 +41,7 @@ let errormemoryInputFormat = {
 
 let newId = null;
 describe("Create", () => {
-  test("Success motherboard | should send an object with key: _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
+  test("Success Case | should send an object with key: _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
     request(app)
       .post("/motherboard")
       // .set("access_token", access_token)
@@ -62,7 +62,7 @@ describe("Create", () => {
         done();
       });
   });
-  test("Fail motherboard | Failed because of empty input", (done) => {
+  test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .post("/motherboard")
       // .set("access_token", access_token)
@@ -74,7 +74,7 @@ describe("Create", () => {
         done();
       });
   });
-  test("Fail motherboard | Failed because of wrong input format", (done) => {
+  test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .post("/motherboard")
       // .set("access_token", access_token)
@@ -88,7 +88,7 @@ describe("Create", () => {
   });
 });
 
-describe("Show all motherboard | Success motherboard", () => {
+describe("Show all | Success Case", () => {
   test("should send an array of objects with key:  _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
     request(app)
       .get("/motherboard")
@@ -111,7 +111,7 @@ describe("Show all motherboard | Success motherboard", () => {
 });
 
 describe("Update motherboard", () => {
-  test("Success motherboard | should send an object with message", (done) => {
+  test("Success Case | should send an object with message", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
       // .set("access_token", access_token)
@@ -132,7 +132,7 @@ describe("Update motherboard", () => {
         done();
       });
   });
-  test("Fail motherboard | Failed because of empty input", (done) => {
+  test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
       // .set("access_token", access_token)
@@ -144,7 +144,7 @@ describe("Update motherboard", () => {
         done();
       });
   });
-  test("Fail motherboard | Failed because of wrong input format", (done) => {
+  test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .put(`/motherboard/${newId}`)
       // .set("access_token", access_token)
@@ -158,7 +158,7 @@ describe("Update motherboard", () => {
   });
 });
 
-describe("Delete memory | Success motherboard", () => {
+describe("Delete Case | Success motherboard", () => {
   test("should send an object with message", (done) => {
     request(app)
       .delete(`/motherboard/${newId}`)

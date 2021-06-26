@@ -1,14 +1,14 @@
-const StorageController = require('../controllers/storage_controller')
-const router = require('express').Router()
+const StorageController = require("../controllers/storage_controller");
+const router = require("express").Router();
 
-router.get('/', StorageController.getStorage)
+const adminAuthorization = require("../middlewares/admin_authorization");
 
-router.post('/', StorageController.postStorage)
+router.use("/", adminAuthorization);
+router.use("/:id", adminAuthorization);
+router.get("/", StorageController.getStorage);
+router.post("/", StorageController.postStorage);
+router.get("/:id", StorageController.getOneStorage);
+router.put("/:id", StorageController.putStorage);
+router.delete("/:id", StorageController.deleteStorage);
 
-router.get('/:id', StorageController.getOneStorage)
-
-router.put('/:id', StorageController.putStorage)
-
-router.delete('/:id', StorageController.deleteStorage)
-
-module.exports = router
+module.exports = router;

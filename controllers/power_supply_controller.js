@@ -44,10 +44,8 @@ class Controller {
 			res.status(400).json({ message: errors });
 		} else {
 			Power_supply.create(newPower_supply)
-				.then(() => {
-					res
-						.status(201)
-						.json({ message: `Succesfully created Power Supply: ${newPower_supply.name}` });
+				.then((data) => {
+					res.status(201).json(data.ops[0]);
 				})
 				.catch((err) => {
 					res.status(500).json({ message: "Server Error" });

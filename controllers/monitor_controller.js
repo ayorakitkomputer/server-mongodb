@@ -44,10 +44,8 @@ class Controller {
 			res.status(400).json({ message: errors });
 		} else {
 			Monitor.create(newMonitor)
-				.then(() => {
-					res.status(201).json({
-						message: `Succesfully created Monitor: ${newMonitor.manufacturer} ${newMonitor.name}`,
-					});
+				.then((data) => {
+					res.status(201).json(data.ops[0]);
 				})
 				.catch((err) => {
 					res.status(500).json({ message: "Server Error" });

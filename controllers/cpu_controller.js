@@ -43,13 +43,11 @@ class Controller {
 		const { errors, errorFlag } = cpuValidator(newCpu);
 
 		if (errorFlag) {
-			res.status(400).json({ message: errors });
+			res.status(400).json(errors);
 		} else {
 			Cpu.create(newCpu)
-				.then(() => {
-					res
-						.status(201)
-						.json({ message: `Succesfully created CPU: ${newCpu.manufacturer} ${newCpu.name}` });
+				.then((data) => {
+					res.status(201).json(data.ops[0]);
 				})
 				.catch((err) => {
 					res.status(500).json({ message: "Server Error" });
@@ -74,7 +72,7 @@ class Controller {
 		const { errors, errorFlag } = cpuValidator(updatedCpu);
 
 		if (errorFlag) {
-			res.status(400).json({ message: errors });
+			res.status(400).json(errors);
 		} else {
 			Cpu.update(id, updatedCpu)
 				.then((data) => {
@@ -104,7 +102,7 @@ class Controller {
 				if (data.deletedCount == 0) {
 					res.status(404).json({ message: `Data not Found` });
 				} else if (data.deletedCount == 1) {
-					res.status(200).json({ message: `Succesfully deleted the CPU` });
+					res.status(200).json(`Succesfully deleted the CPU`);
 				}
 			})
 			.catch((err) => {

@@ -44,8 +44,8 @@ class Controller {
 			res.status(400).json({ message: errors });
 		} else {
 			Storage.create(newStorage)
-				.then(() => {
-					res.status(201).json({ message: `Succesfully created Storage: ${newStorage.name}` });
+				.then((data) => {
+					res.status(201).json(data.ops[0]);
 				})
 				.catch((err) => {
 					res.status(500).json({ message: "Server Error" });

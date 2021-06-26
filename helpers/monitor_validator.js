@@ -18,7 +18,7 @@ const monitorValidator = (data) => {
     typeof data.manufacturer != 'string' ||
     typeof data.image != 'string' ||
     typeof data.name != 'string' ||
-    typeof data.size != 'string' ||
+    typeof data.size != 'number' ||
     typeof data.price != 'number' ||
     typeof data.stock != 'number'
   ) {

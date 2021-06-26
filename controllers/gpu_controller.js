@@ -37,9 +37,10 @@ class Controller {
           res.status(201).json(data.ops[0]);
         })
         .catch((err) => {
-          res.status(500).json({ message: err.message });
+          res.status(504).json({ message: err.message });
         });
     } else {
+      console.log("error");
       res.status(400).json(errors);
     }
   }

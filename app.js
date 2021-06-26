@@ -18,14 +18,4 @@ app.get("/", (req, res) => {
 
 app.use(indexRouter);
 
-// connect()
-//   .then(() => {
-//     app.listen(PORT, () => {
-//       console.log(`Running on ${PORT}`);
-//     });
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
 module.exports = app;

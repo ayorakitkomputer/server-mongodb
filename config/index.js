@@ -4,13 +4,13 @@ const uri =
   "mongodb+srv://pietro:iniFieldPasswordUntukMongoDb@cluster0.gc9uw.mongodb.net/partspicker?retryWrites=true&w=majority";
 
 let database = null;
+let client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 async function connect() {
   try {
-    const client = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
     await client.connect();
     const db = await client.db("testing-partspicker");
 

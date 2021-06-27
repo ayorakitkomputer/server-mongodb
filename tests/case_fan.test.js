@@ -1,10 +1,14 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
+const { createAdmin } = require("./helpers/createAdmin");
+
+let access_token = "";
 
 beforeAll(async () => {
   await connect();
-}, 10000);
+  access_token = await createAdmin();
+}, 15000);
 
 let newProduct = {
   name: "TESTING",
@@ -35,7 +39,7 @@ describe("Create", () => {
   test("Success Case | should send an object with key: _id, name, image, size, price, stock", (done) => {
     request(app)
       .post("/caseFan")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(newProduct)
       .end((err, res) => {
         if (err) done(err);
@@ -52,7 +56,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .post("/caseFan")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -64,7 +68,7 @@ describe("Create", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .post("/caseFan")
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
         if (err) done(err);
@@ -79,6 +83,7 @@ describe("Show all Case | Success Case", () => {
   test("should send an array of objects with key:  _id, name, image, size, price, stock", (done) => {
     request(app)
       .get("/caseFan")
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
@@ -96,7 +101,7 @@ describe("Update Case", () => {
   test("Success Case | should send an object with message", (done) => {
     request(app)
       .put(`/caseFan/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send({
         name: "TESTING EDIT",
         image: "TESTING EDIT",
@@ -114,7 +119,7 @@ describe("Update Case", () => {
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .put(`/caseFan/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
         if (err) done(err);
@@ -126,7 +131,7 @@ describe("Update Case", () => {
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
       .put(`/caseFan/${newId}`)
-      // .set("access_token", access_token)
+      .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
         if (err) done(err);
@@ -141,6 +146,7 @@ describe("Delete Case | Success Case", () => {
   test("should send an object with message", (done) => {
     request(app)
       .delete(`/caseFan/${newId}`)
+      .set("access_token", access_token)
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(200);

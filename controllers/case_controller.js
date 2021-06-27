@@ -3,23 +3,19 @@ const caseValidation = require("../helpers/case_validator");
 
 class Controller {
   static showAllCase(req, res) {
-    Case.findAll()
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+    Case.findAll().then((data) => {
+      res.status(200).json(data);
+    });
   }
   static showOneCase(req, res, next) {
     let id = req.params.id;
-    Case.findById(id)
-      .then((data) => {
+    Case.findById(id).then((data) => {
+      if (data === null) {
+        res.status(404).json({ message: `Data not found` });
+      } else {
         res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+      }
+    });
   }
 
   static addCase(req, res, next) {
@@ -32,13 +28,9 @@ class Controller {
     };
     const { validated, errors } = caseValidation(newCase);
     if (validated) {
-      Case.create(newCase)
-        .then((data) => {
-          res.status(201).json(data.ops[0]);
-        })
-        .catch((err) => {
-          res.status(500).json({ message: err.message });
-        });
+      Case.create(newCase).then((data) => {
+        res.status(201).json(data.ops[0]);
+      });
     } else {
       res.status(400).json(errors);
     }

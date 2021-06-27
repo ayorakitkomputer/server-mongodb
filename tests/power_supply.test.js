@@ -11,13 +11,13 @@ beforeAll(async () => {
 }, 15000);
 
 afterAll(async () => {
-  await deleteAdmin()
+  await deleteAdmin();
 });
 
 let newProduct = {
   name: "TESTING ADD #",
   image: "https://images.evga.com/products/gallery/png/08G-P5-3663-KR_LG_1.png",
-  efficiency_rating: 'TESTING',
+  efficiency_rating: "TESTING",
   wattage: 999,
   price: 1300000,
   stock: 5,
@@ -26,7 +26,7 @@ let newProduct = {
 let errorCaseEmptyInput = {
   name: "",
   image: "https://images.evga.com/products/gallery/png/08G-P5-3663-KR_LG_1.png",
-  efficiency_rating: 'TESTING',
+  efficiency_rating: "TESTING",
   wattage: 999,
   price: 1300000,
   stock: 5,
@@ -35,7 +35,7 @@ let errorCaseEmptyInput = {
 let errorCaseInputFormat = {
   name: "TESTING",
   image: 100,
-  efficiency_rating: 'TESTING',
+  efficiency_rating: "TESTING",
   wattage: 999,
   price: 1300000,
   stock: 5,
@@ -54,7 +54,10 @@ describe("Create", () => {
         expect(res.body).toHaveProperty("_id", expect.any(String));
         expect(res.body).toHaveProperty("name", expect.any(String));
         expect(res.body).toHaveProperty("image", expect.any(String));
-        expect(res.body).toHaveProperty("efficiency_rating", expect.any(String));
+        expect(res.body).toHaveProperty(
+          "efficiency_rating",
+          expect.any(String)
+        );
         expect(res.body).toHaveProperty("wattage", expect.any(Number));
         expect(res.body).toHaveProperty("price", expect.any(Number));
         expect(res.body).toHaveProperty("stock", expect.any(Number));
@@ -70,7 +73,9 @@ describe("Create", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('All fields are required and an input number must not be less than 0');
+        expect(res.body.message).toContain(
+          "All fields are required and an input number must not be less than 0"
+        );
         done();
       });
   });
@@ -82,7 +87,9 @@ describe("Create", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('There are errors in the input format');
+        expect(res.body.message).toContain(
+          "There are errors in the input format"
+        );
         done();
       });
   });
@@ -98,10 +105,47 @@ describe("Show all | Success Case", () => {
         expect(res.body[0]).toHaveProperty("_id", expect.any(String));
         expect(res.body[0]).toHaveProperty("name", expect.any(String));
         expect(res.body[0]).toHaveProperty("image", expect.any(String));
-        expect(res.body[0]).toHaveProperty("efficiency_rating", expect.any(String));
+        expect(res.body[0]).toHaveProperty(
+          "efficiency_rating",
+          expect.any(String)
+        );
         expect(res.body[0]).toHaveProperty("wattage", expect.any(Number));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+});
+
+describe("Show One Case ", () => {
+  test("Success Case || should send an array of objects with key: _id, name, image, efficiency_rating, wattage, price, stock", (done) => {
+    request(app)
+      .get(`/power-supplies/${newId}`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("_id", expect.any(String));
+        expect(res.body).toHaveProperty("name", expect.any(String));
+        expect(res.body).toHaveProperty("image", expect.any(String));
+        expect(res.body).toHaveProperty(
+          "efficiency_rating",
+          expect.any(String)
+        );
+        expect(res.body).toHaveProperty("wattage", expect.any(Number));
+        expect(res.body).toHaveProperty("price", expect.any(Number));
+        expect(res.body).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case || should send a message", (done) => {
+    request(app)
+      .get(`/power-supplies/60d8937939db680d38b923c9`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain("Data not found");
         done();
       });
   });
@@ -116,7 +160,7 @@ describe("Update Case", () => {
         name: "TESTING EDIT #",
         image:
           "https://hargadunia.com/resources/products/img_uploads/aW1nX05WSURJQV9HZUZvMTE6MzM6MjY.jpg",
-        efficiency_rating: 'TESTING EDIT',
+        efficiency_rating: "TESTING EDIT",
         wattage: 9999,
         price: 1002000,
         stock: 10101,
@@ -124,7 +168,9 @@ describe("Update Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(200);
-        expect(res.body.message).toContain("Succesfully edited the Power Supply");
+        expect(res.body.message).toContain(
+          "Succesfully edited the Power Supply"
+        );
         done();
       });
   });
@@ -136,7 +182,9 @@ describe("Update Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('All fields are required and an input number must not be less than 0');
+        expect(res.body.message).toContain(
+          "All fields are required and an input number must not be less than 0"
+        );
         done();
       });
   });
@@ -148,7 +196,9 @@ describe("Update Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('There are errors in the input format');
+        expect(res.body.message).toContain(
+          "There are errors in the input format"
+        );
         done();
       });
   });
@@ -162,7 +212,9 @@ describe("Delete Case | Success Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(200);
-        expect(res.body.message).toContain("Succesfully deleted the Power Supply");
+        expect(res.body.message).toContain(
+          "Succesfully deleted the Power Supply"
+        );
         done();
       });
   });

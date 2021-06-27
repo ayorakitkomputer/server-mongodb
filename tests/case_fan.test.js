@@ -11,7 +11,7 @@ beforeAll(async () => {
 }, 15000);
 
 afterAll(async () => {
-  await deleteAdmin()
+  await deleteAdmin();
 });
 
 let newProduct = {
@@ -57,6 +57,18 @@ describe("Create", () => {
         done();
       });
   });
+  test("Fail Case | Have to login first", (done) => {
+    request(app)
+      .post("/caseFan")
+      .send(newProduct)
+      .end((err, res) => {
+        if (err) done(err);
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain("Please Login First");
+        done();
+      });
+  });
+
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
       .post("/caseFan")
@@ -95,6 +107,35 @@ describe("Show all Case | Success Case", () => {
         expect(res.body[0]).toHaveProperty("size", expect.any(String));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+});
+
+describe("Show One Case ", () => {
+  test("Success Case || should send an array of objects with key:  _id, name, image, size, price, stock", (done) => {
+    request(app)
+      .get(`/caseFan/${newId}`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("_id", expect.any(String));
+        expect(res.body).toHaveProperty("name", expect.any(String));
+        expect(res.body).toHaveProperty("size", expect.any(String));
+        expect(res.body).toHaveProperty("price", expect.any(Number));
+        expect(res.body).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case || should send a message", (done) => {
+    request(app)
+      .get(`/caseFan/60d8937939db680d38b923c9`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain("Data not found");
         done();
       });
   });

@@ -3,23 +3,19 @@ const caseFanValidation = require("../helpers/case_fan_validator");
 
 class Controller {
   static showAllCaseFan(req, res) {
-    CaseFan.findAll()
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+    CaseFan.findAll().then((data) => {
+      res.status(200).json(data);
+    });
   }
   static showOneCaseFan(req, res, next) {
     let id = req.params.id;
-    CaseFan.findById(id)
-      .then((data) => {
+    CaseFan.findById(id).then((data) => {
+      if (data === null) {
+        res.status(404).json({ message: `Data not found` });
+      } else {
         res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+      }
+    });
   }
   static addCaseFan(req, res, next) {
     let newCaseFan = {
@@ -31,13 +27,9 @@ class Controller {
     };
     const { validated, errors } = caseFanValidation(newCaseFan);
     if (validated) {
-      CaseFan.create(newCaseFan)
-        .then((data) => {
-          res.status(201).json(data.ops[0]);
-        })
-        .catch((err) => {
-          res.status(500).json({ message: err.message });
-        });
+      CaseFan.create(newCaseFan).then((data) => {
+        res.status(201).json(data.ops[0]);
+      });
     } else {
       res.status(400).json(errors);
     }

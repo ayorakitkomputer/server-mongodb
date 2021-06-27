@@ -11,13 +11,13 @@ beforeAll(async () => {
 }, 15000);
 
 afterAll(async () => {
-  await deleteAdmin()
+  await deleteAdmin();
 });
 
 let newProduct = {
   name: "TESTING ADD #",
   image: "https://images.evga.com/products/gallery/png/08G-P5-3663-KR_LG_1.png",
-  manufacturer: 'TESTING',
+  manufacturer: "TESTING",
   size: 999,
   price: 1300000,
   stock: 5,
@@ -26,7 +26,7 @@ let newProduct = {
 let errorCaseEmptyInput = {
   name: "",
   image: "https://images.evga.com/products/gallery/png/08G-P5-3663-KR_LG_1.png",
-  manufacturer: 'TESTING',
+  manufacturer: "TESTING",
   size: 999,
   price: 1300000,
   stock: 5,
@@ -35,7 +35,7 @@ let errorCaseEmptyInput = {
 let errorCaseInputFormat = {
   name: "TESTING",
   image: 100,
-  manufacturer: 'TESTING',
+  manufacturer: "TESTING",
   size: 999,
   price: 1300000,
   stock: 5,
@@ -70,7 +70,9 @@ describe("Create", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('All fields are required and an input number must not be less than 0');
+        expect(res.body.message).toContain(
+          "All fields are required and an input number must not be less than 0"
+        );
         done();
       });
   });
@@ -82,7 +84,9 @@ describe("Create", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('There are errors in the input format');
+        expect(res.body.message).toContain(
+          "There are errors in the input format"
+        );
         done();
       });
   });
@@ -107,6 +111,37 @@ describe("Show all | Success Case", () => {
   });
 });
 
+describe("Show One Case ", () => {
+  test("Success Case || should send an array of objects with key: _id, name, image, manufacturer, size, price, stock", (done) => {
+    request(app)
+      .get(`/monitors/${newId}`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("_id", expect.any(String));
+        expect(res.body).toHaveProperty("name", expect.any(String));
+        expect(res.body).toHaveProperty("image", expect.any(String));
+        expect(res.body).toHaveProperty("manufacturer", expect.any(String));
+        expect(res.body).toHaveProperty("size", expect.any(Number));
+        expect(res.body).toHaveProperty("price", expect.any(Number));
+        expect(res.body).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case || should send a message", (done) => {
+    request(app)
+      .get(`/monitors/60d8937939db680d38b923c9`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain("Data not found");
+        done();
+      });
+  });
+});
+
 describe("Update Case", () => {
   test("Success Case | should send an object with message", (done) => {
     request(app)
@@ -116,7 +151,7 @@ describe("Update Case", () => {
         name: "TESTING EDIT #",
         image:
           "https://hargadunia.com/resources/products/img_uploads/aW1nX05WSURJQV9HZUZvMTE6MzM6MjY.jpg",
-        manufacturer: 'TESTING EDIT',
+        manufacturer: "TESTING EDIT",
         size: 9999,
         price: 1002000,
         stock: 10101,
@@ -136,7 +171,9 @@ describe("Update Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('All fields are required and an input number must not be less than 0');
+        expect(res.body.message).toContain(
+          "All fields are required and an input number must not be less than 0"
+        );
         done();
       });
   });
@@ -148,7 +185,9 @@ describe("Update Case", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body.message).toContain('There are errors in the input format');
+        expect(res.body.message).toContain(
+          "There are errors in the input format"
+        );
         done();
       });
   });

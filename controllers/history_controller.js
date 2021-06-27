@@ -14,7 +14,7 @@ class HistoryController {
             .then((data) => {
                 res.status(201).json({
                     message: `${data.insertedCount} documents were inserted`,
-                    id: data.ops[0],
+                    historyId: data.ops[0]._id,
                 });
             })
             .catch((err) => {
@@ -38,6 +38,7 @@ class HistoryController {
                 res.status(200).json(data);
             })
             .catch((err) => {
+                console.log(err);
                 res.status(500).json({ message: err.message });
             });
     }

@@ -90,7 +90,9 @@ describe("Create", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.status).toBe(400);
-        expect(res.body).toContain("There's an error in your input");
+        expect(res.body).toContain(
+          "Oops there seems an error on your data types"
+        );
         done();
       });
   });

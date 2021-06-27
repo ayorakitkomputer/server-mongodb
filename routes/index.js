@@ -15,8 +15,13 @@ const monitorRouter = require("./monitor_routes");
 const historyRoutes = require("./history_routes");
 
 router.use("/", userRoutes);
+<<<<<<< HEAD
 router.use("/builds", buildsRoutes);
 router.use("/history", historyRoutes);
+=======
+router.use("/builds", authentication, buildsRoutes);
+router.use("/history", authentication, historyRoutes);
+>>>>>>> 58884c00c837b31160e7266ac1e135c2a4acc3b0
 router.use("/cpu", cpuRouter);
 router.use("/storages", storageRouter);
 router.use("/power-supplies", powerSupplyRouter);

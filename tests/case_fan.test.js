@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
-const { createAdmin } = require("./helpers/createAdmin");
+const { createAdmin, deleteAdmin } = require("./helpers/createAdmin");
 
 let access_token = "";
 
@@ -10,10 +10,14 @@ beforeAll(async () => {
   access_token = await createAdmin();
 }, 15000);
 
+afterAll(async () => {
+  await deleteAdmin()
+});
+
 let newProduct = {
   name: "TESTING",
   image: "TESTING",
-  size: 100,
+  size: "TESTING",
   price: 100,
   stock: 100,
 };
@@ -21,7 +25,7 @@ let newProduct = {
 let errorCaseEmptyInput = {
   name: "",
   image: "TESTING",
-  size: 100,
+  size: "TESTING",
   price: 100,
   stock: 100,
 };
@@ -29,7 +33,7 @@ let errorCaseEmptyInput = {
 let errorCaseInputFormat = {
   name: 100,
   image: "TESTING",
-  size: "TESTING",
+  size: 100,
   price: 100,
   stock: 100,
 };
@@ -46,7 +50,7 @@ describe("Create", () => {
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty("_id", expect.any(String));
         expect(res.body).toHaveProperty("name", expect.any(String));
-        expect(res.body).toHaveProperty("size", expect.any(Number));
+        expect(res.body).toHaveProperty("size", expect.any(String));
         expect(res.body).toHaveProperty("price", expect.any(Number));
         expect(res.body).toHaveProperty("stock", expect.any(Number));
         newId = res.body._id;
@@ -83,13 +87,12 @@ describe("Show all Case | Success Case", () => {
   test("should send an array of objects with key:  _id, name, image, size, price, stock", (done) => {
     request(app)
       .get("/caseFan")
-      .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
         expect(res.body[0]).toHaveProperty("_id", expect.any(String));
         expect(res.body[0]).toHaveProperty("name", expect.any(String));
-        expect(res.body[0]).toHaveProperty("size", expect.any(Number));
+        expect(res.body[0]).toHaveProperty("size", expect.any(String));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
         done();
@@ -105,7 +108,7 @@ describe("Update Case", () => {
       .send({
         name: "TESTING EDIT",
         image: "TESTING EDIT",
-        size: 100,
+        size: "TESTING",
         price: 100,
         stock: 100,
       })

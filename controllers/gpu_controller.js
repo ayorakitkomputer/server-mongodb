@@ -40,7 +40,6 @@ class Controller {
           res.status(504).json({ message: err.message });
         });
     } else {
-      console.log("error");
       res.status(400).json(errors);
     }
   }

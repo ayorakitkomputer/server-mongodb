@@ -12,7 +12,12 @@ class HistoryController {
 				return History.create(doc);
 			})
 			.then((data) => {
-				res.status(200).json({ message: `${data.insertedCount} documents were inserted` });
+				res.status(201)
+					.json(
+						{
+							message: `${data.insertedCount} documents were inserted`,
+							id: data.ops[0]
+					 	});
 			})
 			.catch((err) => {
 				res.status(500).json({ message: err.message });

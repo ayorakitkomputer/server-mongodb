@@ -14,12 +14,9 @@ const powerSupplyRouter = require("./power_supply_routes");
 const monitorRouter = require("./monitor_routes");
 const historyRoutes = require("./history_routes");
 
-const authentication = require("../middlewares/authentication");
-
 router.use("/", userRoutes);
-router.use("/builds", authentication, buildsRoutes);
-router.use("/history", authentication, historyRoutes);
-router.use(authentication);
+router.use("/builds", buildsRoutes);
+router.use("/history", historyRoutes);
 router.use("/cpu", cpuRouter);
 router.use("/storages", storageRouter);
 router.use("/power-supplies", powerSupplyRouter);

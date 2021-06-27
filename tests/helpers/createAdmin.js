@@ -2,6 +2,7 @@ const Users = require("../../models/users");
 const { sign } = require("../../helpers/jwt");
 
 let access_token = "";
+let email;
 
 async function createAdmin() {
   let userAdmin = {
@@ -19,7 +20,13 @@ async function createAdmin() {
     email: user.ops[0].email,
     role: user.ops[0].role,
   };
+
+  email = newAdmin.email
   return (access_token = sign(newAdmin));
 }
 
-module.exports = { createAdmin };
+async function deleteAdmin() {
+  await Users.destroyEmail(email)
+}
+
+module.exports = { createAdmin, deleteAdmin };

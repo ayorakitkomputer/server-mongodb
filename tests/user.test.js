@@ -43,15 +43,16 @@ beforeAll(async () => {
   await connect();
 }, 15000);
 
-// afterAll((done) => {
-//   Users.destroy({ truncate: true, restartIdentity: true })
-//     .then(() => {
-//       done();
-//     })
-//     .catch((err) => {
-//       done(err);
-//     });
-// });
+
+afterAll((done) => {
+  Users.destroyEmail(userCustomer.email)
+    .then(() => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
 
 describe("Register", () => {
   test("Register | Success Case : should send an object with key: id, email, address, firstname, lastname", (done) => {

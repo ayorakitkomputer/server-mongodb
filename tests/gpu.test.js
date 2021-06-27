@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
-const { createAdmin } = require("./helpers/createAdmin");
+const { createAdmin, deleteAdmin } = require("./helpers/createAdmin");
 
 let access_token = "";
 
@@ -9,6 +9,10 @@ beforeAll(async () => {
   await connect();
   access_token = await createAdmin();
 }, 15000);
+
+afterAll(async () => {
+  await deleteAdmin()
+});
 
 let newProduct = {
   name: "TESTING ADD #",
@@ -88,7 +92,6 @@ describe("Show all | Success Case", () => {
   test("should send an array of objects with key: _id, name, image, manufacturere, tdp, price, stock", (done) => {
     request(app)
       .get("/gpu")
-      .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);

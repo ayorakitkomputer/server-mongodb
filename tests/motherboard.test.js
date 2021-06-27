@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { connect } = require("../config");
-const { createAdmin } = require("./helpers/createAdmin");
+const { createAdmin, deleteAdmin } = require("./helpers/createAdmin");
 
 let access_token = "";
 
@@ -9,6 +9,10 @@ beforeAll(async () => {
   await connect();
   access_token = await createAdmin();
 }, 15000);
+
+afterAll(async () => {
+  await deleteAdmin()
+});
 
 let newProduct = {
   name: "TESTING",

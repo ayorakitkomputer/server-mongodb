@@ -19,9 +19,18 @@ class Users {
 			.findOne({ _id: ObjectId(id) });
 	}
 
-	static destroy() {
-		return getDatabase(collectionName).remove({});
-	}
+	static destroy(id) {
+    return getDatabase()
+      .collection(collectionName)
+      .deleteOne({ _id: ObjectId(id) });
+  }
+
+	// jourdy made this
+	static destroyEmail(email) {
+    return getDatabase()
+      .collection(collectionName)
+      .deleteOne({ email: email });
+  }
 }
 
 module.exports = Users;

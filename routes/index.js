@@ -18,6 +18,8 @@ const authentication = require("../middlewares/authentication");
 
 router.use("/", userRoutes);
 router.use("/builds", authentication, buildsRoutes);
+router.use("/history", authentication, historyRoutes);
+router.use(authentication);
 router.use("/cpu", cpuRouter);
 router.use("/storages", storageRouter);
 router.use("/power-supplies", powerSupplyRouter);
@@ -27,6 +29,5 @@ router.use("/motherboard", motherboardRoutes);
 router.use("/case", caseRoutes);
 router.use("/memory", memoryRoutes);
 router.use("/caseFan", caseFanRoutes);
-router.use("/history", authentication, historyRoutes);
 
 module.exports = router;

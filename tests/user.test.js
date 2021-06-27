@@ -3,7 +3,7 @@ const app = require("../app.js");
 const { connect } = require("../config");
 const Users = require("../models/users");
 
-let userId = "";
+// let userId = "";
 
 let userCustomer = {
     email: "customer@mail.com",

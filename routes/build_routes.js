@@ -4,7 +4,8 @@ const Builds = require("../controllers/build_controller");
 const Authorization = require("../middlewares/build_authorization");
 const authentication = require("../middlewares/authentication");
 
-router.use(authentication)
+router.use(authentication);
+
 router.post("/", Builds.addBuild);
 router.get("/", Builds.getAllByUserId);
 router.post("/:id/motherboard", Authorization, Builds.patchMotherboard);

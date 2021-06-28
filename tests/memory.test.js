@@ -11,7 +11,7 @@ beforeAll(async () => {
 }, 15000);
 
 afterAll(async () => {
-  await deleteAdmin()
+  await deleteAdmin();
 });
 
 let newProduct = {
@@ -102,6 +102,37 @@ describe("Show all memory | Success memory", () => {
         expect(res.body[0]).toHaveProperty("speed", expect.any(Number));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+});
+
+describe("Show One Case ", () => {
+  test("Success Case || should send an array of objects with key: _id, name, image, speed, memory_type, price, stock", (done) => {
+    request(app)
+      .get(`/memory/${newId}`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("_id", expect.any(String));
+        expect(res.body).toHaveProperty("name", expect.any(String));
+        expect(res.body).toHaveProperty("image", expect.any(String));
+        expect(res.body).toHaveProperty("memory_type", expect.any(String));
+        expect(res.body).toHaveProperty("speed", expect.any(Number));
+        expect(res.body).toHaveProperty("price", expect.any(Number));
+        expect(res.body).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case || should send a message", (done) => {
+    request(app)
+      .get(`/memory/60d8937939db680d38b923c9`)
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain("Data not found");
         done();
       });
   });

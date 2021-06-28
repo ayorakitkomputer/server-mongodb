@@ -10,7 +10,7 @@ const Monitor = require("../models/monitor");
 
 class BuildController {
 	static addBuild(req, res) {
-		Builds.create()
+		Builds.create({ user: req.currentUser })
 			.then((data) => {
 				res.status(200).json({ id: data.insertedId });
 			})

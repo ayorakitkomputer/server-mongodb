@@ -25,6 +25,7 @@ router.patch("/:id/case", Authorization, Builds.patchCase);
 router.get("/:id/power_supply", Authorization, Power_Supply.getByWatt);
 router.patch("/:id/power_supply", Authorization, Builds.patchPowerSupply);
 router.patch("/:id/monitor", Authorization, Builds.patchMonitor);
+router.patch("/:id/case_fan", Authorization, Builds.patchCaseFan);
 router.delete("/:id", Authorization, Builds.deleteBuild);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const storageRouter = require("./storage_routes");
 const powerSupplyRouter = require("./power_supply_routes");
 const monitorRouter = require("./monitor_routes");
 const historyRoutes = require("./history_routes");
+const xenditRoutes = require("./xendit_routes");
 
 router.use("/", userRoutes);
 router.use("/builds", buildsRoutes);
@@ -26,5 +27,6 @@ router.use("/motherboard", motherboardRoutes);
 router.use("/case", caseRoutes);
 router.use("/memory", memoryRoutes);
 router.use("/caseFan", caseFanRoutes);
+router.use("/payment", xenditRoutes);
 
 module.exports = router;

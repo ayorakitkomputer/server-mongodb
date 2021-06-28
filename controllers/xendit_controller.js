@@ -43,30 +43,31 @@ class XenditController {
 			isSingleUse: true,
 		})
 			.then((response) => {
-				res.status(200).json(response);
-			})
+				res.status(201).json(response);
+			})	
 			.catch((err) => {
+				console.log(err, `ini error di xendit`);
 				res.status(500).json({ message: err.message });
 			});
 	}
 
-	static getVirtualAccountPaymentStatus(req, res) {
-		const x = new Xendit({
-			secretKey: process.env.XENDIT_KEY,
-		});
-		const { VirtualAcc } = x;
-		const va = new VirtualAcc();
+	// static getVirtualAccountPaymentStatus(req, res) {
+	// 	const x = new Xendit({
+	// 		secretKey: process.env.XENDIT_KEY,
+	// 	});
+	// 	const { VirtualAcc } = x;
+	// 	const va = new VirtualAcc();
 
-		va.getVAPayment({
-			paymentID: req.body.payment_id,
-		})
-			.then((data) => {
-				res.status(200).json(data);
-			})
-			.catch((err) => {
-				res.status(500).json({ message: err.message });
-			});
-	} //https://api.xendit.co/callback_virtual_accounts/external_id=${externalID}/simulate_payment
+	// 	va.getVAPayment({
+	// 		paymentID: req.body.payment_id,
+	// 	})
+	// 		.then((data) => {
+	// 			res.status(200).json(data);
+	// 		})
+	// 		.catch((err) => {
+	// 			res.status(500).json({ message: err.message });
+	// 		});
+	// } //https://api.xendit.co/callback_virtual_accounts/external_id=${externalID}/simulate_payment
 
 	static allCallback(req, res) {
 		res.status(200).json({ message: `Payment success` });

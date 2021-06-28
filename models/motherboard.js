@@ -1,27 +1,32 @@
 const { getDatabase } = require("../config/index");
 const { ObjectId } = require("mongodb");
-const collectionGpu = "motherboards";
+const collectionName = "motherboards";
 
 class Motherboard {
-  static findAll() {
-    return getDatabase().collection(collectionGpu).find().toArray();
+  static findAll(page, limit) {
+    return getDatabase()
+      .collection(collectionName)
+      .find()
+      .skip(page)
+      .limit(limit)
+      .toArray();
   }
   static findById(id) {
     return getDatabase()
-      .collection(collectionGpu)
+      .collection(collectionName)
       .findOne({ _id: ObjectId(id) });
   }
   static create(payload) {
-    return getDatabase().collection(collectionGpu).insertOne(payload);
+    return getDatabase().collection(collectionName).insertOne(payload);
   }
   static update(filter, updated) {
     return getDatabase()
-      .collection(collectionGpu)
+      .collection(collectionName)
       .updateOne({ _id: ObjectId(filter) }, { $set: updated });
   }
   static destroy(id) {
     return getDatabase()
-      .collection(collectionGpu)
+      .collection(collectionName)
       .deleteOne({ _id: ObjectId(id) });
   }
 }

@@ -3,9 +3,18 @@ const Cpu = require("../models/cpu");
 
 class Controller {
   static getCpu(req, res, next) {
-    Cpu.findAll().then((data) => {
-      res.status(200).json(data);
-    });
+    let page = parseInt(req.query.page);
+    let limit = 10;
+    if (page < 0 || page === 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Cpu.findAll(skippedData, limit).then((data) => {
+        res.status(200).json(data);
+      });
+    }
   }
 
   static getOneCpu(req, res, next) {

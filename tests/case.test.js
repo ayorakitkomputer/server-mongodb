@@ -84,10 +84,11 @@ describe("Create", () => {
   });
 });
 
-describe("Show all case | Success Case", () => {
-  test("should send an array of objects with key:  _id, name, image, form_factor, price, stock", (done) => {
+describe("Show all case", () => {
+  test("Success Case | should send an array of objects with key:  _id, name, image, form_factor, price, stock", (done) => {
     request(app)
       .get("/case")
+      .query({ page: "1" })
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
@@ -96,6 +97,19 @@ describe("Show all case | Success Case", () => {
         expect(res.body[0]).toHaveProperty("form_factor", expect.any(String));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case | should send a message invalid page number", (done) => {
+    request(app)
+      .get("/case")
+      .query({ page: "0" })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain(
+          "invalid page number, should start with 1"
+        );
         done();
       });
   });

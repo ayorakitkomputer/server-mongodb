@@ -3,9 +3,18 @@ const memoryValidation = require("../helpers/memory_validator");
 
 class Controller {
   static showAllMemory(req, res) {
-    Memory.findAll().then((data) => {
-      res.status(200).json(data);
-    });
+    let page = parseInt(req.query.page);
+    let limit = 10;
+    if (page < 0 || page === 0) {
+      return res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Memory.findAll(skippedData, limit).then((data) => {
+        res.status(200).json(data);
+      });
+    }
   }
   static showOneMemory(req, res, next) {
     let id = req.params.id;

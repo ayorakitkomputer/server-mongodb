@@ -5,7 +5,7 @@ const adminAuthorization = require("../middlewares/admin_authorization");
 const authentication = require("../middlewares/authentication");
 
 router.get("/", Controller.showAllCase);
-router.use(authentication)
+router.use(authentication);
 router.use("/", adminAuthorization);
 router.use("/:id", adminAuthorization);
 router.get("/:id", Controller.showOneCase);

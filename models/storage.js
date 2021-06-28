@@ -3,10 +3,14 @@ const { ObjectId } = require("mongodb");
 const collectionName = "storages";
 
 class Storage {
-  static findAll() {
-    return getDatabase().collection(collectionName).find().toArray();
+  static findAll(page, limit) {
+    return getDatabase()
+      .collection(collectionName)
+      .find()
+      .skip(page)
+      .limit(limit)
+      .toArray();
   }
-
   static findOne(id) {
     const filter = { _id: ObjectId(id) };
     return getDatabase().collection(collectionName).findOne(filter);

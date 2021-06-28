@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --forceExit --runInBand --collectCoverage",
     "dev": "npx nodemon bin/http"
-},
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pcpartpickerindonesia/server-mongodb.git"
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/pcpartpickerindonesia/server-mongodb#readme",
   "dependencies": {
     "@shelf/jest-mongodb": "^1.2.5",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",

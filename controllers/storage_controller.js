@@ -3,9 +3,18 @@ const Storage = require("../models/Storage");
 
 class Controller {
   static getStorage(req, res, next) {
-    Storage.findAll().then((data) => {
-      res.status(200).json(data);
-    });
+    let page = parseInt(req.query.page);
+    let limit = 10;
+    if (page < 0 || page === 0) {
+      return res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Storage.findAll(skippedData, limit).then((data) => {
+        res.status(200).json(data);
+      });
+    }
   }
 
   static getOneStorage(req, res, next) {

@@ -3,8 +3,13 @@ const { ObjectId } = require("mongodb");
 const collectionName = "monitors";
 
 class Monitor {
-  static findAll() {
-    return getDatabase().collection(collectionName).find().toArray();
+  static findAll(page, limit) {
+    return getDatabase()
+      .collection(collectionName)
+      .find()
+      .skip(page)
+      .limit(limit)
+      .toArray();
   }
 
   static findOne(id) {

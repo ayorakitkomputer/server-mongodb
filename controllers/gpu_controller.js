@@ -3,9 +3,18 @@ const gpuValidation = require("../helpers/gpu_validator");
 
 class Controller {
   static showAllGpu(req, res) {
-    Gpu.findAll().then((data) => {
-      res.status(200).json(data);
-    });
+    let page = parseInt(req.query.page);
+    let limit = 10;
+    if (page < 0 || page === 0) {
+      return res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Gpu.findAll(skippedData, limit).then((data) => {
+        res.status(200).json(data);
+      });
+    }
   }
   static showOneGpu(req, res, next) {
     let id = req.params.id;

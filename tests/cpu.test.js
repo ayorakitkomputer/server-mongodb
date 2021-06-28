@@ -48,6 +48,7 @@ let errorCaseInputFormat = {
 };
 
 let newId = null;
+
 describe("Create", () => {
   test("Success Case | should send an object with key: _id, name, image, manufacturer, socket, igpu, tdp, price, stock", (done) => {
     request(app)
@@ -102,6 +103,7 @@ describe("Show all | Success Case", () => {
   test("should send an array of objects with key: _id, name, image, socket, igpu, manufacturer, tdp, price, stock", (done) => {
     request(app)
       .get("/cpu")
+      .query({ page: "1" })
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
@@ -114,6 +116,19 @@ describe("Show all | Success Case", () => {
         expect(res.body[0]).toHaveProperty("tdp", expect.any(Number));
         expect(res.body[0]).toHaveProperty("price", expect.any(Number));
         expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        done();
+      });
+  });
+  test("Fail Case | should send a message invalid page number", (done) => {
+    request(app)
+      .get("/cpu")
+      .query({ page: "0" })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toContain(
+          "invalid page number, should start with 1"
+        );
         done();
       });
   });

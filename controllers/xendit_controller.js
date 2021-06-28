@@ -1,4 +1,5 @@
 const Xendit = require("xendit-node");
+const Axios = require("axios");
 
 class XenditController {
 	static getVirtualAccounts(req, res) {
@@ -50,23 +51,28 @@ class XenditController {
 			});
 	}
 
-	static getVirtualAccountPaymentStatus(req, res) {
-		const x = new Xendit({
-			secretKey: process.env.XENDIT_KEY,
-		});
-		const { VirtualAcc } = x;
-		const va = new VirtualAcc();
-
-		va.getVAPayment({
-			paymentID: req.body.payment_id,
-		})
-			.then((data) => {
+	static payVirtualAccount(req, res) {
+		const { externalID, amount } = req.body;
+		Axios.post(
+			`https://api.xendit.co/callback_virtual_accounts/external_id=${externalID}/simulate_payment`,
+			{
+				amount,
+			},
+			{
+				auth: {
+					username: process.env.XENDIT_KEY,
+					password: "",
+				},
+			}
+		)
+			.then(({ data }) => {
+				console.log(data);
 				res.status(200).json(data);
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				res.status(500).json({ message: err.response.data.message });
 			});
-	} //https://api.xendit.co/callback_virtual_accounts/external_id=${externalID}/simulate_payment
+	}
 
 	static allCallback(req, res) {
 		res.status(200).json({ message: `Payment success` });
@@ -80,11 +86,11 @@ class XenditController {
 		const ewalletSpecificOptions = {};
 		const ew = new EWallet(ewalletSpecificOptions);
 
-		const { phone, ewalletType } = req.body;
+		const { phone, ewalletType, amount } = req.body;
 
 		ew.createPayment({
 			externalID: Date.now().toString(),
-			amount: 25000,
+			amount,
 			phone,
 			ewalletType,
 		})
@@ -121,8 +127,8 @@ class XenditController {
 		const { Card } = x;
 		const card = new Card({});
 
-		const tokenID = "60d9481d4d739100202b1405"; //https://js.xendit.co/test_tokenize.html
-		const authID = "60d9481d4d739100202b1406";
+		const tokenID = "60d9964d616b5e002083bdb3"; //https://js.xendit.co/test_tokenize.html
+		const authID = "60d9978d616b5e002083bdc4"; //https://js.xendit.co/test_authenticate.html
 
 		const amount = req.body.amount;
 
@@ -210,14 +216,29 @@ class XenditController {
 			});
 	}
 
-	/*
-    https://api.xendit.co/fixed_payment_code/simulate_payment
-    {
-        "retail_outlet_name": "ALFAMART",
-        "payment_code": "TEST857560",
-        "transfer_amount": 10000
-    }
-    */
+	static payRetailStore(req, res) {
+		const { retail_outlet_name, payment_code, transfer_amount } = req.body;
+		Axios.post(
+			"https://api.xendit.co/fixed_payment_code/simulate_payment",
+			{
+				retail_outlet_name,
+				payment_code,
+				transfer_amount,
+			},
+			{
+				auth: {
+					username: process.env.XENDIT_KEY,
+					password: "",
+				},
+			}
+		)
+			.then(({ data }) => {
+				res.status(200).json(data);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
 }
 
 module.exports = XenditController;

@@ -3,23 +3,19 @@ const memoryValidation = require("../helpers/memory_validator");
 
 class Controller {
   static showAllMemory(req, res) {
-    Memory.findAll()
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+    Memory.findAll().then((data) => {
+      res.status(200).json(data);
+    });
   }
   static showOneMemory(req, res, next) {
     let id = req.params.id;
-    Memory.findById(id)
-      .then((data) => {
+    Memory.findById(id).then((data) => {
+      if (data === null) {
+        res.status(404).json({ message: `Data not found` });
+      } else {
         res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+      }
+    });
   }
   static addMemory(req, res, next) {
     let newMemory = {
@@ -32,13 +28,9 @@ class Controller {
     };
     const { validated, errors } = memoryValidation(newMemory);
     if (validated) {
-      Memory.create(newMemory)
-        .then((data) => {
-          res.status(201).json(data.ops[0]);
-        })
-        .catch((err) => {
-          res.status(500).json({ message: err.message });
-        });
+      Memory.create(newMemory).then((data) => {
+        res.status(201).json(data.ops[0]);
+      });
     } else {
       res.status(400).json(errors);
     }

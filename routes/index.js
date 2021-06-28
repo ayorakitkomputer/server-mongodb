@@ -15,10 +15,9 @@ const monitorRouter = require("./monitor_routes");
 const historyRoutes = require("./history_routes");
 const xenditRoutes = require("./xendit_routes");
 
-const authentication = require("../middlewares/authentication");
-
 router.use("/", userRoutes);
-router.use("/builds", authentication, buildsRoutes);
+router.use("/builds", buildsRoutes);
+router.use("/history", historyRoutes);
 router.use("/cpu", cpuRouter);
 router.use("/storages", storageRouter);
 router.use("/power-supplies", powerSupplyRouter);
@@ -28,7 +27,6 @@ router.use("/motherboard", motherboardRoutes);
 router.use("/case", caseRoutes);
 router.use("/memory", memoryRoutes);
 router.use("/caseFan", caseFanRoutes);
-router.use("/history", authentication, historyRoutes);
-router.use("/payment", authentication, xenditRoutes);
+router.use("/payment", xenditRoutes);
 
 module.exports = router;

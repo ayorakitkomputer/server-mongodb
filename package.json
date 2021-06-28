@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit",
-    "dev": "npx nodemon /bin/http"
-  },
+    "test": "jest --forceExit --runInBand --collectCoverage",
+    "dev": "npx nodemon bin/http"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pcpartpickerindonesia/server-mongodb.git"

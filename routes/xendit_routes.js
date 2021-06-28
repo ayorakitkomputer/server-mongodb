@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Xendit = require("../controllers/xendit_controller");
+const authentication = require("../middlewares/authentication");
 
+router.use(authentication);
 router.post("/callback", Xendit.allCallback);
 router.get("/va/list", Xendit.getVirtualAccounts);
 router.post("/va/invoice", Xendit.createVirtualAccount);

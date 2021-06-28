@@ -8,7 +8,7 @@ function caseFanValidation(data) {
   } else if (
     typeof data.name === "string" &&
     typeof data.image === "string" &&
-    typeof data.size === "number" &&
+    typeof data.size === "string" &&
     typeof data.price === "number" &&
     typeof data.stock === "number"
   ) {

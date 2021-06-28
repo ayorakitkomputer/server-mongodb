@@ -295,6 +295,7 @@ class BuildController {
 			.then((data) => {
 				if (!data) throw new Error("Build not found");
 				buildData = data;
+
 				if (Array.isArray(caseFanIds)) {
 					if (caseFanIds.length > 3) throw new Error("Case Fan cannot more than 3");
 					buildData["case_fan"] = [];

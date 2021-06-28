@@ -7,6 +7,7 @@ const Gpu = require("../models/gpu");
 const Case = require("../models/case");
 const PowerSupply = require("../models/power_supply");
 const Monitor = require("../models/monitor");
+const CaseFan = require("../models/case_fan");
 
 class BuildController {
 	static addBuild(req, res) {
@@ -103,6 +104,8 @@ class BuildController {
 				if (!data) throw new Error("Build not found");
 				buildData = data;
 				if (Array.isArray(storageIds)) {
+					if (storageIds.length > 3) throw new Error("Storage cannot more than 3");
+
 					buildData["storage"] = [];
 
 					storageIds.forEach((storageId) => {
@@ -249,6 +252,7 @@ class BuildController {
 				if (!data) throw new Error("Build not found");
 				buildData = data;
 				if (Array.isArray(monitorIds)) {
+					if (monitorIds.length > 3) throw new Error("Monitor cannot more than 3");
 					buildData["monitor"] = [];
 
 					monitorIds.forEach((monitorId) => {
@@ -272,6 +276,50 @@ class BuildController {
 			})
 			.then(() => {
 				return Builds.update({ monitor: buildData.monitor }, buildId);
+			})
+			.then((data) => {
+				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
+
+	static patchCaseFan(req, res) {
+		const buildId = req.params.id;
+		const { caseFanIds } = req.body;
+		let buildData;
+		let promises = [];
+
+		Builds.findByPk(buildId)
+			.then((data) => {
+				if (!data) throw new Error("Build not found");
+				buildData = data;
+				if (Array.isArray(caseFansIds)) {
+					if (caseFanIds.length > 3) throw new Error("Case Fan cannot more than 3");
+					buildData["case_fan"] = [];
+
+					caseFanIds.forEach((caseFanId) => {
+						promises.push(
+							CaseFan.findById(caseFanId)
+								.then((caseFan) => {
+									if (!caseFan) throw new Error("Case Fan not found");
+									buildData["case_fan"].push(caseFan);
+								})
+								.catch((err) => {
+									//   res.status(500).json({ message: err.message });
+									throw new Error(err.message);
+								})
+						);
+					});
+
+					return Promise.all(promises);
+				} else {
+					throw new Error("Case Fan must be an Array");
+				}
+			})
+			.then(() => {
+				return Builds.update({ case_fan: buildData.case_fan }, buildId);
 			})
 			.then((data) => {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });

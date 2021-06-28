@@ -172,11 +172,11 @@ class XenditController {
 		const { RetailOutlet } = x;
 		const ro = new RetailOutlet({});
 
-		const { expectedAmt } = req.body;
+		const { expectedAmt, retailOutletName } = req.body;
 
 		ro.createFixedPaymentCode({
-			externalID: "123",
-			retailOutletName: "ALFAMART", //Alfamart || Indomaret
+			externalID: Date.now().toString(),
+			retailOutletName, //Alfamart || Indomaret
 			name: req.currentUser.firstname,
 			expectedAmt,
 		})

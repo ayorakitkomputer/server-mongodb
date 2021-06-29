@@ -25,8 +25,10 @@ class Controller {
 		const { id } = req.params;
 		const page = parseInt(req.query.page);
 		const limit = 10;
+		const documentsCount = await Motherboard.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
 
-		if (page < 0 || page === 0) {
+		if (page <= 0) {
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
@@ -35,7 +37,7 @@ class Controller {
 				return Motherboard.findBySocket(skippedData, limit, data.cpu.socket);
 			})
 			.then((data) => {
-				if (data) res.status(200).json(data);
+				if (data) res.status(200).json({ data, howManyPages });
 				else res.status(400).json({ message: "Data not found" });
 			})
 			.catch((err) => {

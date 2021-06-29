@@ -24,6 +24,9 @@ class Controller {
 	static getByWatt(req, res) {
 		let page = parseInt(req.query.page);
 		let limit = 10;
+		const documentsCount = await Power_supply.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
 		const { id } = req.params;
 		if (page < 0 || page === 0) {
 			res.status(400).json({ message: "invalid page number, should start with 1" });
@@ -38,7 +41,7 @@ class Controller {
 				return Power_supply.findAllByWatt(skippedData, limit, currentWattage);
 			})
 			.then((data) => {
-				if (data) res.status(200).json(data);
+				if (data) res.status(200).json({ data, howManyPages });
 				res.status(400).json({ message: "Data not found" });
 			})
 			.catch((err) => {

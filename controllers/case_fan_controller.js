@@ -35,8 +35,8 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       size: req.body.size,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
     const { validated, errors } = caseFanValidation(newCaseFan);
     if (validated) {
@@ -53,8 +53,8 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       size: req.body.size,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { validated, errors } = caseFanValidation(editedCaseFan);

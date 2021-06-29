@@ -25,19 +25,21 @@ class Controller {
 		const { id } = req.params;
 		const page = parseInt(req.query.page);
 		const limit = 10;
-		const documentsCount = await Motherboard.findDocumentsCount()
-    const howManyPages = Math.ceil(documentsCount / limit)
 
 		if (page <= 0) {
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
-			.then((data) => {
+			.then(async (data) => {
 				let skippedData = (page - 1) * limit;
-				return Motherboard.findBySocket(skippedData, limit, data.cpu.socket);
+				let filteredDocuments = await Motherboard.findBySocket(data.cpu.socket, limit, skippedData);
+				const totalDocuments = filteredDocuments[0].pages[0].total
+				filteredDocuments[0].pages[0].total =  Math.ceil(totalDocuments / limit)
+
+				return filteredDocuments
 			})
 			.then((data) => {
-				if (data) res.status(200).json({ data, howManyPages });
+				if (data) res.status(200).json(data);
 				else res.status(400).json({ message: "Data not found" });
 			})
 			.catch((err) => {
@@ -62,8 +64,8 @@ class Controller {
 			memory_type: req.body.memory_type,
 			manufacturer: req.body.manufacturer,
 			form_factor: req.body.form_factor,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 		const { validated, errors } = motherboardValidation(newMotherboard);
 		if (validated) {
@@ -87,8 +89,8 @@ class Controller {
 			memory_type: req.body.memory_type,
 			manufacturer: req.body.manufacturer,
 			form_factor: req.body.form_factor,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 
 		const { validated, errors } = motherboardValidation(editedMotherboard);

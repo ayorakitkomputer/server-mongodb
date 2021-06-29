@@ -36,10 +36,10 @@ class Controller {
   static postMonitor(req, res) {
     const newMonitor = {
       name: req.body.name,
-      size: req.body.size,
+      size: +req.body.size,
       manufacturer: req.body.manufacturer,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
       image: req.body.image,
     };
 
@@ -59,10 +59,10 @@ class Controller {
 
     const updatedMonitor = {
       name: req.body.name,
-      size: req.body.size,
+      size: +req.body.size,
       manufacturer: req.body.manufacturer,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
       image: req.body.image,
     };
 

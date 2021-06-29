@@ -9,14 +9,32 @@ class Memory {
 	static findDocumentsCount() {
     return getDatabase().collection(collectionName).countDocuments()
   }
-	static findByType(page, limit, memory_type) {
-		return getDatabase()
-			.collection(collectionName)
-			.find({ memory_type })
-			.skip(page)
-			.limit(limit)
-			.toArray();
-	}
+	static findByType(filter, limit, skip) {
+		return getDatabase().collection(collectionName).aggregate([
+			{
+				$match: {
+					memory_type: filter
+				}
+			},
+			{
+				$facet: {
+					pages: [
+						{
+							$count: "total"
+						}
+					],
+					data: [
+						{
+							$skip: skip
+						},
+						{
+							$limit: limit
+						}
+					]
+				}
+			}
+		]).toArray()
+  }
 	static findById(id) {
 		return getDatabase()
 			.collection(collectionName)

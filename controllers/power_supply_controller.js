@@ -24,24 +24,31 @@ class Controller {
 	static getByWatt(req, res) {
 		let page = parseInt(req.query.page);
 		let limit = 10;
-		const documentsCount = await Power_supply.findDocumentsCount()
-    const howManyPages = Math.ceil(documentsCount / limit)
 
 		const { id } = req.params;
 		if (page < 0 || page === 0) {
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
-			.then((data) => {
+			.then(async (data) => {
 				let currentWattage = 0;
+				let skippedData = (page - 1) * limit;
+				
 				currentWattage += data.cpu.tdp;
-				buildData.gpu.forEach((gpuData) => {
+				data.gpu.forEach((gpuData) => {
 					currentWattage += gpuData.tdp;
 				});
-				return Power_supply.findAllByWatt(skippedData, limit, currentWattage);
+
+				let filteredDocuments = await Power_supply.findAllByWatt(skippedData, limit, currentWattage);
+				const totalDocuments = filteredDocuments[0].pages[0].total
+				filteredDocuments[0].pages[0].total =  Math.ceil(totalDocuments / limit)
+
+				return filteredDocuments
+
+				// return Power_supply.findAllByWatt(skippedData, limit, currentWattage);
 			})
 			.then((data) => {
-				if (data) res.status(200).json({ data, howManyPages });
+				if (data) res.status(200).json(data);
 				res.status(400).json({ message: "Data not found" });
 			})
 			.catch((err) => {
@@ -66,9 +73,9 @@ class Controller {
 			image: req.body.image,
 			name: req.body.name,
 			efficiency_rating: req.body.efficiency_rating,
-			wattage: req.body.wattage,
-			price: req.body.price,
-			stock: req.body.stock,
+			wattage: +req.body.wattage,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 
 		const { errors, errorFlag } = Power_supply_Validator(newPower_supply);
@@ -89,9 +96,9 @@ class Controller {
 			image: req.body.image,
 			name: req.body.name,
 			efficiency_rating: req.body.efficiency_rating,
-			wattage: req.body.wattage,
-			price: req.body.price,
-			stock: req.body.stock,
+			wattage: +req.body.wattage,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 
 		const { errors, errorFlag } = Power_supply_Validator(updatedPower_supply);

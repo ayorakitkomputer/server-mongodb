@@ -12,13 +12,39 @@ class Power_Supply {
   }
 
 	static findAllByWatt(page, limit, watt) {
-		return getDatabase()
-			.collection(collectionName)
-			.find({ wattage: { $gt: watt } })
-			.skip(page)
-			.limit(limit)
-			.toArray();
+		return getDatabase().collection(collectionName).aggregate([
+			{
+				$match: {
+					wattage: { $gt: watt }
+				}
+			},
+			{
+				$facet: {
+					pages: [
+						{
+							$count: "total"
+						}
+					],
+					data: [
+						{
+							$skip: page
+						},
+						{
+							$limit: limit
+						}
+					]
+				}
+			}
+		]).toArray()
 	}
+	// static findAllByWatt(page, limit, watt) {
+	// 	return getDatabase()
+	// 		.collection(collectionName)
+	// 		.find({ wattage: { $gt: watt } })
+	// 		.skip(page)
+	// 		.limit(limit)
+	// 		.toArray();
+	// }
 
 	static findOne(id) {
 		const filter = { _id: ObjectId(id) };

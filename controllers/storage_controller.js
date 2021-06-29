@@ -39,8 +39,8 @@ class Controller {
       name: req.body.name,
       capacity: req.body.capacity,
       type: req.body.type,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = storageValidator(newStorage);
@@ -66,8 +66,8 @@ class Controller {
       name: req.body.name,
       capacity: req.body.capacity,
       type: req.body.type,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = storageValidator(updatedStorage);

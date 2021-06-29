@@ -194,6 +194,8 @@ class BuildController {
 			})
 			.then((caseData) => {
 				const motherboardSize = buildData.motherboard.form_factor
+				const caseSize = caseData.form_factor
+				let doc = { case: caseData };
 				
 				if (!caseData) throw new Error("Case not found");
 
@@ -203,14 +205,19 @@ class BuildController {
 				 * ATX
 				 */
 
-				// if (caseData.form_factor === 'ATX') { // case nya itu atx mobo
-				// 	motherboardSize === 'ATX' || motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX' ? return Builds.update(doc, buildId) : ''
-				// }
+				if (caseSize === 'ATX') {
+					if (motherboardSize === 'ATX' || motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
+					else throw new Error("Case is not compatible");
 
-				// else if (caseData.form_factor === buildData.motherboard.form_factor) {
-				// 	let doc = { case: caseData };
-				// 	return Builds.update(doc, buildId);
-				// } else throw new Error("Case is not compatible");
+				} else if (caseSize === 'Micro ATX') {
+					if (motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
+					else throw new Error("Case is not compatible");
+
+				} else if (caseSize === 'Mini ATX') {
+					if (motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
+					else throw new Error("Case is not compatible");
+
+				}
 			})
 			.then((data) => {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });

@@ -43,10 +43,10 @@ class Controller {
       image: req.body.image,
       name: req.body.name,
       socket: req.body.socket,
-      igpu: req.body.igpu,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      igpu: req.body.igpu === 'true' ? true : false,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = cpuValidator(newCpu);
@@ -68,10 +68,10 @@ class Controller {
       image: req.body.image,
       name: req.body.name,
       socket: req.body.socket,
-      igpu: req.body.igpu,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      igpu: req.body.igpu === 'true' ? true : false,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = cpuValidator(updatedCpu);

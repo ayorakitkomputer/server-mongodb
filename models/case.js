@@ -14,6 +14,32 @@ class Case {
 	static findDocumentsCount() {
     return getDatabase().collection(collectionName).countDocuments()
   }
+	static findCaseAgregated(filter, limit, skip) {
+		return getDatabase().collection(collectionName).aggregate([
+			{
+				$match: {
+					form_factor: filter
+				}
+			},
+			{
+				$facet: {
+					pages: [
+						{
+							$count: "total"
+						}
+					],
+					data: [
+						{
+							$skip: skip
+						},
+						{
+							$limit: limit
+						}
+					]
+				}
+			}
+		]).toArray()
+  }
 	static create(payload) {
 		return getDatabase().collection(collectionName).insertOne(payload);
 	}

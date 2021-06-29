@@ -35,9 +35,9 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       manufacturer: req.body.manufacturer,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
     const { validated, errors } = gpuValidation(newGpu);
     if (validated) {
@@ -54,9 +54,9 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       manufacturer: req.body.manufacturer,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { validated, errors } = gpuValidation(editedGpu);

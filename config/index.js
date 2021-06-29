@@ -12,7 +12,7 @@ let client = new MongoClient(uri, {
 async function connect() {
     try {
         await client.connect();
-        const db = await client.db("partspicker");
+        const db = await client.db("testing-partspicker");
 
         database = db;
         return db;

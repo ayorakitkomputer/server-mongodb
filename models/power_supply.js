@@ -6,6 +6,10 @@ class Power_Supply {
 	static findAll(page, limit) {
 		return getDatabase().collection(collectionName).find().skip(page).limit(limit).toArray();
 	}
+	
+	static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
 
 	static findAllByWatt(page, limit, watt) {
 		return getDatabase()

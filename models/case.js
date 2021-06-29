@@ -11,6 +11,9 @@ class Case {
 			.collection(collectionName)
 			.findOne({ _id: ObjectId(id) });
 	}
+	static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
 	static create(payload) {
 		return getDatabase().collection(collectionName).insertOne(payload);
 	}

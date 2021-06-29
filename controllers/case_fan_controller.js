@@ -2,18 +2,22 @@ const CaseFan = require("../models/case_fan");
 const caseFanValidation = require("../helpers/case_fan_validator");
 
 class Controller {
-  static showAllCaseFan(req, res) {
+  static async showAllCaseFan(req, res) {
     let page = parseInt(req.query.page);
     let limit = 10;
-    if (page < 0 || page === 0) {
-      return res
+    const documentsCount = await CaseFan.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
         .status(404)
         .json({ message: "invalid page number, should start with 1" });
     } else {
       let skippedData = (page - 1) * limit;
-      CaseFan.findAll(skippedData, limit).then((data) => {
-        res.status(200).json(data);
-      });
+      CaseFan.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
     }
   }
   static showOneCaseFan(req, res, next) {

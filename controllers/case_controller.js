@@ -3,17 +3,23 @@ const caseValidation = require("../helpers/case_validator");
 const Builds = require("../models/builds");
 
 class Controller {
-	static showAllCase(req, res) {
+	static async showAllCase(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Case.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Case.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Case.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getByFormFactor(req, res) {
 		const { id } = req.params;

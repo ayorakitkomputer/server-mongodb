@@ -11,6 +11,9 @@ class Motherboard {
 			.collection(collectionName)
 			.findOne({ _id: ObjectId(id) });
 	}
+	static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
 	static findBySocket(page, limit, socket) {
 		return getDatabase()
 			.collection(collectionName)

@@ -3,17 +3,23 @@ const memoryValidation = require("../helpers/memory_validator");
 const Builds = require("../models/builds");
 
 class Controller {
-	static showAllMemory(req, res) {
+	static async showAllMemory(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			return res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Memory.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Memory.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Memory.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getAllByType(req, res) {
 		const { id } = req.params;

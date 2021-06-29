@@ -25,7 +25,10 @@ class Controller {
 		const { id } = req.params;
 		let page = parseInt(req.query.page);
 		let limit = 10;
-		if (page < 0 || page === 0)
+		const documentsCount = await Memory.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+		if (page <= 0)
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		Builds.findByPk(id)
 			.then((data) => {
@@ -34,7 +37,7 @@ class Controller {
 				return Memory.findByType(skippedData, limit, data.motherboard.memory_type);
 			})
 			.then((data) => {
-				if (data) res.status(200).json(data);
+				if (data) res.status(200).json({ data, howManyPages });
 				else res.status(400).json({ message: "Data not Found" });
 			})
 			.catch((err) => {

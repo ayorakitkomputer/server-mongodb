@@ -12,6 +12,10 @@ class Monitor {
       .toArray();
   }
 
+  static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
+
   static findOne(id) {
     const filter = { _id: ObjectId(id) };
     return getDatabase().collection(collectionName).findOne(filter);

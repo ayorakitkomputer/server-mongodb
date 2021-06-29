@@ -3,17 +3,23 @@ const Builds = require("../models/builds");
 const Power_supply = require("../models/Power_supply");
 
 class Controller {
-	static getPower_supply(req, res, next) {
+	static async getPower_supply(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			return res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Power_supply.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Power_supply.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Power_supply.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getByWatt(req, res) {
 		let page = parseInt(req.query.page);
@@ -40,7 +46,7 @@ class Controller {
 			});
 	}
 
-	static getOnePower_supply(req, res, next) {
+	static getOnePower_supply(req, res) {
 		const id = req.params.id;
 
 		Power_supply.findOne(id).then((data) => {
@@ -52,7 +58,7 @@ class Controller {
 		});
 	}
 
-	static postPower_supply(req, res, next) {
+	static postPower_supply(req, res) {
 		const newPower_supply = {
 			image: req.body.image,
 			name: req.body.name,
@@ -73,7 +79,7 @@ class Controller {
 		}
 	}
 
-	static putPower_supply(req, res, next) {
+	static putPower_supply(req, res) {
 		const id = req.params.id;
 
 		const updatedPower_supply = {
@@ -104,7 +110,7 @@ class Controller {
 		}
 	}
 
-	static deletePower_supply(req, res, next) {
+	static deletePower_supply(req, res) {
 		const id = req.params.id;
 
 		Power_supply.destroy(id)

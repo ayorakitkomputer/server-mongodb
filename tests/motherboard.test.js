@@ -97,7 +97,7 @@ describe("Create", () => {
 });
 
 describe("Show all | Success Case", () => {
-  test("should send an array of objects with key:  _id, name, image, socket, memory_type, manufacturer, form_factor, price, stock", (done) => {
+  test("Should send an object with keys data: [_id, name, image, socket, memory_type, manufacturer, form_factor, price, stock] and howManyPages", (done) => {
     request(app)
       .get("/motherboard")
       .query({ page: "1" })
@@ -105,15 +105,16 @@ describe("Show all | Success Case", () => {
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("_id", expect.any(String));
-        expect(res.body[0]).toHaveProperty("name", expect.any(String));
-        expect(res.body[0]).toHaveProperty("image", expect.any(String));
-        expect(res.body[0]).toHaveProperty("socket", expect.any(String));
-        expect(res.body[0]).toHaveProperty("memory_type", expect.any(String));
-        expect(res.body[0]).toHaveProperty("manufacturer", expect.any(String));
-        expect(res.body[0]).toHaveProperty("form_factor", expect.any(String));
-        expect(res.body[0]).toHaveProperty("price", expect.any(Number));
-        expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        expect(res.body).toHaveProperty("howManyPages", expect.any(Number));
+        expect(res.body.data[0]).toHaveProperty("_id", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("name", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("image", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("socket", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("memory_type", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("manufacturer", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("form_factor", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("price", expect.any(Number));
+        expect(res.body.data[0]).toHaveProperty("stock", expect.any(Number));
         done();
       });
   });

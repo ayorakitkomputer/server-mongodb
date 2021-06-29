@@ -96,18 +96,19 @@ describe("Create", () => {
 });
 
 describe("Show all Case | Success Case", () => {
-  test("should send an array of objects with key:  _id, name, image, size, price, stock", (done) => {
+  test("Should send an object with keys data: [_id, name, image, size, price, stock] and howManyPages", (done) => {
     request(app)
       .get("/caseFan")
       .query({ page: "1" })
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("_id", expect.any(String));
-        expect(res.body[0]).toHaveProperty("name", expect.any(String));
-        expect(res.body[0]).toHaveProperty("size", expect.any(String));
-        expect(res.body[0]).toHaveProperty("price", expect.any(Number));
-        expect(res.body[0]).toHaveProperty("stock", expect.any(Number));
+        expect(res.body).toHaveProperty("howManyPages", expect.any(Number));
+        expect(res.body.data[0]).toHaveProperty("_id", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("name", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("size", expect.any(String));
+        expect(res.body.data[0]).toHaveProperty("price", expect.any(Number));
+        expect(res.body.data[0]).toHaveProperty("stock", expect.any(Number));
         done();
       });
   });

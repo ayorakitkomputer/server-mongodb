@@ -6,6 +6,9 @@ class Memory {
 	static findAll(page, limit) {
 		return getDatabase().collection(collectionName).find().skip(page).limit(limit).toArray();
 	}
+	static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
 	static findByType(page, limit, memory_type) {
 		return getDatabase()
 			.collection(collectionName)

@@ -3,17 +3,23 @@ const motherboardValidation = require("../helpers/motherboard_validator");
 const Builds = require("../models/builds");
 
 class Controller {
-	static showAllMotherboard(req, res) {
+	static async showAllMotherboard(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			return res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Motherboard.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Motherboard.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Motherboard.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getBySocket(req, res) {
 		const { id } = req.params;

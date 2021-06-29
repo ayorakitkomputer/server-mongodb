@@ -11,6 +11,9 @@ class CaseFan {
       .limit(limit)
       .toArray();
   }
+  static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
   static findById(id) {
     return getDatabase()
       .collection(collectionName)

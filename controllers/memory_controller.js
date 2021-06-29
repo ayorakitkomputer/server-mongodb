@@ -3,29 +3,40 @@ const memoryValidation = require("../helpers/memory_validator");
 const Builds = require("../models/builds");
 
 class Controller {
-	static showAllMemory(req, res) {
+	static async showAllMemory(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			return res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Memory.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Memory.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Memory.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getAllByType(req, res) {
 		const { id } = req.params;
 		let page = parseInt(req.query.page);
 		let limit = 10;
-		if (page < 0 || page === 0)
+
+		if (page <= 0)
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		Builds.findByPk(id)
-			.then((data) => {
+			.then(async (data) => {
 				if (!data) return false;
 				let skippedData = (page - 1) * limit;
-				return Memory.findByType(skippedData, limit, data.motherboard.memory_type);
+
+				let filteredDocuments = await Memory.findByType(data.motherboard.memory_type, limit, skippedData);
+				const totalDocuments = filteredDocuments[0].pages[0].total
+				filteredDocuments[0].pages[0].total =  Math.ceil(totalDocuments / limit)
+				return filteredDocuments
 			})
 			.then((data) => {
 				if (data) res.status(200).json(data);
@@ -50,10 +61,10 @@ class Controller {
 		let newMemory = {
 			name: req.body.name,
 			image: req.body.image,
-			speed: req.body.speed,
+			speed: +req.body.speed,
 			memory_type: req.body.memory_type,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 		const { validated, errors } = memoryValidation(newMemory);
 		if (validated) {
@@ -70,10 +81,10 @@ class Controller {
 		let editedMemory = {
 			name: req.body.name,
 			image: req.body.image,
-			speed: req.body.speed,
+			speed: +req.body.speed,
 			memory_type: req.body.memory_type,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 
 		const { validated, errors } = memoryValidation(editedMemory);

@@ -2,22 +2,26 @@ const storageValidator = require("../helpers/storage_validator");
 const Storage = require("../models/Storage");
 
 class Controller {
-  static getStorage(req, res, next) {
+  static async getStorage(req, res) {
     let page = parseInt(req.query.page);
     let limit = 10;
-    if (page < 0 || page === 0) {
-      return res
+    const documentsCount = await Storage.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
         .status(404)
         .json({ message: "invalid page number, should start with 1" });
     } else {
       let skippedData = (page - 1) * limit;
-      Storage.findAll(skippedData, limit).then((data) => {
-        res.status(200).json(data);
-      });
+      Storage.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
     }
   }
 
-  static getOneStorage(req, res, next) {
+  static getOneStorage(req, res) {
     const id = req.params.id;
 
     Storage.findOne(id).then((data) => {
@@ -29,14 +33,14 @@ class Controller {
     });
   }
 
-  static postStorage(req, res, next) {
+  static postStorage(req, res) {
     const newStorage = {
       image: req.body.image,
       name: req.body.name,
       capacity: req.body.capacity,
       type: req.body.type,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = storageValidator(newStorage);
@@ -54,7 +58,7 @@ class Controller {
     }
   }
 
-  static putStorage(req, res, next) {
+  static putStorage(req, res) {
     const id = req.params.id;
 
     const updatedStorage = {
@@ -62,8 +66,8 @@ class Controller {
       name: req.body.name,
       capacity: req.body.capacity,
       type: req.body.type,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = storageValidator(updatedStorage);
@@ -81,7 +85,7 @@ class Controller {
     }
   }
 
-  static deleteStorage(req, res, next) {
+  static deleteStorage(req, res) {
     const id = req.params.id;
 
     Storage.destroy(id)

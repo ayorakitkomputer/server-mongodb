@@ -2,22 +2,26 @@ const cpuValidator = require("../helpers/cpu_validator");
 const Cpu = require("../models/cpu");
 
 class Controller {
-  static getCpu(req, res, next) {
+  static async getCpu(req, res) {
     let page = parseInt(req.query.page);
     let limit = 10;
-    if (page < 0 || page === 0) {
+    const documentsCount = await Cpu.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
       res
         .status(404)
         .json({ message: "invalid page number, should start with 1" });
     } else {
       let skippedData = (page - 1) * limit;
-      Cpu.findAll(skippedData, limit).then((data) => {
-        res.status(200).json(data);
-      });
+      Cpu.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
     }
   }
 
-  static getOneCpu(req, res, next) {
+  static getOneCpu(req, res) {
     const id = req.params.id;
 
     Cpu.findOne(id)
@@ -33,16 +37,16 @@ class Controller {
       });
   }
 
-  static postCpu(req, res, next) {
+  static postCpu(req, res) {
     const newCpu = {
       manufacturer: req.body.manufacturer,
       image: req.body.image,
       name: req.body.name,
       socket: req.body.socket,
-      igpu: req.body.igpu,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      igpu: req.body.igpu === 'true' ? true : false,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = cpuValidator(newCpu);
@@ -56,7 +60,7 @@ class Controller {
     }
   }
 
-  static putCpu(req, res, next) {
+  static putCpu(req, res) {
     const id = req.params.id;
 
     const updatedCpu = {
@@ -64,10 +68,10 @@ class Controller {
       image: req.body.image,
       name: req.body.name,
       socket: req.body.socket,
-      igpu: req.body.igpu,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      igpu: req.body.igpu === 'true' ? true : false,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { errors, errorFlag } = cpuValidator(updatedCpu);
@@ -91,7 +95,7 @@ class Controller {
     }
   }
 
-  static deleteCpu(req, res, next) {
+  static deleteCpu(req, res) {
     const id = req.params.id;
 
     Cpu.destroy(id)

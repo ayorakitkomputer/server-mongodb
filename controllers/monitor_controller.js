@@ -2,22 +2,26 @@ const monitorValidator = require("../helpers/monitor_validator");
 const Monitor = require("../models/monitor");
 
 class Controller {
-  static getMonitor(req, res, next) {
+  static async getMonitor(req, res) {
     let page = parseInt(req.query.page);
     let limit = 10;
-    if (page < 0 || page === 0) {
-      return res
+    const documentsCount = await Monitor.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
         .status(404)
         .json({ message: "invalid page number, should start with 1" });
     } else {
       let skippedData = (page - 1) * limit;
-      Monitor.findAll(skippedData, limit).then((data) => {
-        res.status(200).json(data);
-      });
+      Monitor.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
     }
   }
 
-  static getOneMonitor(req, res, next) {
+  static getOneMonitor(req, res) {
     const id = req.params.id;
 
     Monitor.findOne(id).then((data) => {
@@ -29,13 +33,13 @@ class Controller {
     });
   }
 
-  static postMonitor(req, res, next) {
+  static postMonitor(req, res) {
     const newMonitor = {
       name: req.body.name,
-      size: req.body.size,
+      size: +req.body.size,
       manufacturer: req.body.manufacturer,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
       image: req.body.image,
     };
 
@@ -50,15 +54,15 @@ class Controller {
     }
   }
 
-  static putMonitor(req, res, next) {
+  static putMonitor(req, res) {
     const id = req.params.id;
 
     const updatedMonitor = {
       name: req.body.name,
-      size: req.body.size,
+      size: +req.body.size,
       manufacturer: req.body.manufacturer,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
       image: req.body.image,
     };
 
@@ -81,7 +85,7 @@ class Controller {
     }
   }
 
-  static deleteMonitor(req, res, next) {
+  static deleteMonitor(req, res) {
     const id = req.params.id;
 
     Monitor.destroy(id)

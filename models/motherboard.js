@@ -11,14 +11,43 @@ class Motherboard {
 			.collection(collectionName)
 			.findOne({ _id: ObjectId(id) });
 	}
-	static findBySocket(page, limit, socket) {
-		return getDatabase()
-			.collection(collectionName)
-			.find({ socket })
-			.skip(page)
-			.limit(limit)
-			.toArray();
-	}
+	static findDocumentsCount() {
+    return getDatabase().collection(collectionName).countDocuments()
+  }
+	static findBySocket(filter, limit, skip) {
+		return getDatabase().collection(collectionName).aggregate([
+			{
+				$match: {
+					socket: filter
+				}
+			},
+			{
+				$facet: {
+					pages: [
+						{
+							$count: "total"
+						}
+					],
+					data: [
+						{
+							$skip: skip
+						},
+						{
+							$limit: limit
+						}
+					]
+				}
+			}
+		]).toArray()
+  }
+	// static findBySocket(page, limit, socket) {
+	// 	return getDatabase()
+	// 		.collection(collectionName)
+	// 		.find({ socket })
+	// 		.skip(page)
+	// 		.limit(limit)
+	// 		.toArray();
+	// }
 	static create(payload) {
 		return getDatabase().collection(collectionName).insertOne(payload);
 	}

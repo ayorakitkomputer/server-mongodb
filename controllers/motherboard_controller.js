@@ -3,30 +3,40 @@ const motherboardValidation = require("../helpers/motherboard_validator");
 const Builds = require("../models/builds");
 
 class Controller {
-	static showAllMotherboard(req, res) {
+	static async showAllMotherboard(req, res) {
 		let page = parseInt(req.query.page);
-		let limit = 10;
-		if (page < 0 || page === 0) {
-			return res.status(404).json({ message: "invalid page number, should start with 1" });
-		} else {
-			let skippedData = (page - 1) * limit;
-			Motherboard.findAll(skippedData, limit).then((data) => {
-				res.status(200).json(data);
-			});
-		}
+    let limit = 10;
+    const documentsCount = await Motherboard.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      Motherboard.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
 	}
 	static getBySocket(req, res) {
 		const { id } = req.params;
 		const page = parseInt(req.query.page);
 		const limit = 10;
 
-		if (page < 0 || page === 0) {
+		if (page <= 0) {
 			res.status(400).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
-			.then((data) => {
+			.then(async (data) => {
 				let skippedData = (page - 1) * limit;
-				return Motherboard.findBySocket(skippedData, limit, data.cpu.socket);
+				let filteredDocuments = await Motherboard.findBySocket(data.cpu.socket, limit, skippedData);
+				const totalDocuments = filteredDocuments[0].pages[0].total
+				filteredDocuments[0].pages[0].total =  Math.ceil(totalDocuments / limit)
+
+				return filteredDocuments
 			})
 			.then((data) => {
 				if (data) res.status(200).json(data);
@@ -54,8 +64,8 @@ class Controller {
 			memory_type: req.body.memory_type,
 			manufacturer: req.body.manufacturer,
 			form_factor: req.body.form_factor,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 		const { validated, errors } = motherboardValidation(newMotherboard);
 		if (validated) {
@@ -79,8 +89,8 @@ class Controller {
 			memory_type: req.body.memory_type,
 			manufacturer: req.body.manufacturer,
 			form_factor: req.body.form_factor,
-			price: req.body.price,
-			stock: req.body.stock,
+			price: +req.body.price,
+			stock: +req.body.stock,
 		};
 
 		const { validated, errors } = motherboardValidation(editedMotherboard);

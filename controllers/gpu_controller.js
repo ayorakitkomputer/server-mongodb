@@ -2,18 +2,22 @@ const Gpu = require("../models/gpu");
 const gpuValidation = require("../helpers/gpu_validator");
 
 class Controller {
-  static showAllGpu(req, res) {
+  static async showAllGpu(req, res) {
     let page = parseInt(req.query.page);
     let limit = 10;
-    if (page < 0 || page === 0) {
-      return res
+    const documentsCount = await Gpu.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
         .status(404)
         .json({ message: "invalid page number, should start with 1" });
     } else {
       let skippedData = (page - 1) * limit;
-      Gpu.findAll(skippedData, limit).then((data) => {
-        res.status(200).json(data);
-      });
+      Gpu.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
     }
   }
   static showOneGpu(req, res, next) {
@@ -31,9 +35,9 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       manufacturer: req.body.manufacturer,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
     const { validated, errors } = gpuValidation(newGpu);
     if (validated) {
@@ -50,9 +54,9 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       manufacturer: req.body.manufacturer,
-      tdp: req.body.tdp,
-      price: req.body.price,
-      stock: req.body.stock,
+      tdp: +req.body.tdp,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { validated, errors } = gpuValidation(editedGpu);

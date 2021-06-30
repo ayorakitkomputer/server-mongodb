@@ -2,64 +2,65 @@ const Build = require("../models/builds");
 const History = require("../models/history");
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "nodemailer.hacktiv8@gmail.com",
-    pass: "passworD123",
-  },
+	service: "gmail",
+	auth: {
+		user: "nodemailer.hacktiv8@gmail.com",
+		pass: "passworD123",
+	},
 });
 
 class HistoryController {
-  static createHistory(req, res) {
-    let doc = {
-      user: req.currentUser,
-      createdAt: Date.now(),
-      shipmentStatus: false,
-    };
+	static createHistory(req, res) {
+		let doc = {
+			user: req.currentUser,
+			createdAt: Date.now(),
+			shipmentStatus: false,
+		};
 
-    Build.findByPk(req.body.buildId)
-      .then((data) => {
-        if (!data) throw new Error("Build not found");
-        doc["build"] = data;
-        return History.create(doc);
-      })
-      .then((data) => {
-        res.status(201).json({
-          message: `${data.insertedCount} documents were inserted`,
-          historyId: data.ops[0]._id,
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
-  }
+		Build.findByPk(req.body.buildId)
+			.then((data) => {
+				if (!data) throw new Error("Build not found");
+				doc["build"] = data;
+				return History.create(doc);
+			})
+			.then((data) => {
+				res.status(201).json({
+					message: `${data.insertedCount} documents were inserted`,
+					historyId: data.ops[0]._id,
+				});
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
 
-  static getAllHistory(req, res) {
-    History.findAllHistory().then((data) => {
-      res.status(200).json(data);
-    });
-  }
+	static getAllHistory(req, res) {
+		History.findAllHistory().then((data) => {
+			res.status(200).json(data);
+		});
+	}
 
-  static patchShipment(req, res) {
-    const { id } = req.params;
-    const doc = { shipmentStatus: req.body.shipmentStatus };
-    History.update(doc, id)
-      .then((data) => {
-        if (data.matchedCount === 1) {
-          return History.findByPk(id);
-        } else {
-          throw new Error("Transaction not found");
-        }
-      })
-      .then((data) => {
-        let totalPrice = 0;
-        let names = [];
+	static patchShipment(req, res) {
+		const { id } = req.params;
+		const doc = { shipmentStatus: req.body.shipmentStatus };
+		History.update(doc, id)
+			.then((data) => {
+				if (data.matchedCount === 1) {
+					return History.findByPk(id);
+				} else {
+					throw new Error("Transaction not found");
+				}
+			})
+			.then((data) => {
+				let totalPrice = 0;
+				let names = [];
 
-        Object.keys(data.build).forEach((product) => {
-          if (Array.isArray(data.build[product])) {
-            data.build[product].forEach((el) => {
-              totalPrice += el.price;
-              names.push(/*html*/ `
+				Object.keys(data.build).forEach((product) => {
+					if (Array.isArray(data.build[product])) {
+						data.build[product].forEach((el) => {
+							console.log(el.price.toLocaleString);
+							totalPrice += el.price;
+							names.push(/*html*/ `
               <tr>
               <td
                 width="75%"
@@ -88,16 +89,17 @@ class HistoryController {
                 "
               >
                 ${el.price.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                })}
+									style: "currency",
+									currency: "IDR",
+								})}
               </td>
             </tr>
               `);
-            });
-          } else if (product.toString() !== "_id") {
-            totalPrice += data.build[product].price;
-            names.push(/*html*/ `
+						});
+					} else if (product.toString() !== "_id") {
+						totalPrice += data.build[product].price;
+						console.log(data.build[product].price.toLocaleString);
+						names.push(/*html*/ `
               <tr>
               <td
                 width="75%"
@@ -126,20 +128,20 @@ class HistoryController {
                 "
               >
                 ${data.build[product].price.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                })}
+									style: "currency",
+									currency: "IDR",
+								})}
               </td>
             </tr>
               `);
-          }
-        });
+					}
+				});
 
-        const mailOptions = {
-          from: "nodemailer.hacktiv8@gmail.com",
-          to: data.user.email,
-          subject: "Your Purchase Has Been Shipped!",
-          html: /*html*/ `<html lang="en">
+				const mailOptions = {
+					from: "nodemailer.hacktiv8@gmail.com",
+					to: data.user.email,
+					subject: "Your Purchase Has Been Shipped!",
+					html: /*html*/ `<html lang="en">
           <head>
             <meta charset="UTF-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -406,8 +408,8 @@ class HistoryController {
                                   </td>
                                   </tr>
                                 ${names.map((table) => {
-                                  return table;
-                                })}
+																	return table;
+																})}
                               </table>
                             </td>
                           </tr>
@@ -451,9 +453,9 @@ class HistoryController {
                                     "
                                   >
                                     ${totalPrice.toLocaleString("id-ID", {
-                                      style: "currency",
-                                      currency: "IDR",
-                                    })}
+																			style: "currency",
+																			currency: "IDR",
+																		})}
                                   </td>
                                 </tr>
                               </table>
@@ -694,40 +696,41 @@ class HistoryController {
             </table>
           </body>
         </html>`,
-        };
-        transporter.sendMail(mailOptions, (err, data) => {
-          if (err) {
-            console.log(err, "err in sending email");
-          } else {
-            console.log(data, "email sent");
-          }
-        });
-        res.status(200).json({ message: `Updated 1 document(s)` });
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
-  }
+				};
+				console.log(totalPrice.toLocaleString);
+				transporter.sendMail(mailOptions, (err, data) => {
+					if (err) {
+						console.log(err, "err in sending email");
+					} else {
+						console.log(data, "email sent");
+					}
+				});
+				res.status(200).json({ message: `Updated 1 document(s)` });
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
 
-  static getHistory(req, res) {
-    History.findAll(req.currentUser.id)
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
-  }
+	static getHistory(req, res) {
+		History.findAll(req.currentUser.id)
+			.then((data) => {
+				res.status(200).json(data);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
 
-  static getOne(req, res) {
-    History.findByPk(req.params.id)
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
-  }
+	static getOne(req, res) {
+		History.findByPk(req.params.id)
+			.then((data) => {
+				res.status(200).json(data);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
 }
 
 module.exports = HistoryController;

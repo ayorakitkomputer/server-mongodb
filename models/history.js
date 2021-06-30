@@ -7,6 +7,10 @@ class History {
 		return getDatabase().collection(collectionName).find({ "user.id": id }).toArray();
 	}
 
+	static findAllHistory() {
+		return getDatabase().collection(collectionName).find().toArray();
+	}
+
 	static findByPk(id) {
 		return getDatabase()
 			.collection(collectionName)
@@ -15,6 +19,12 @@ class History {
 
 	static create(data) {
 		return getDatabase().collection(collectionName).insertOne(data);
+	}
+
+	static update(updateDoc, id) {
+		return getDatabase()
+			.collection(collectionName)
+			.updateOne({ _id: ObjectId(id) }, { $set: updateDoc });
 	}
 }
 

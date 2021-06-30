@@ -20,13 +20,13 @@ router.use("/builds", buildsRoutes);
 router.use("/history", historyRoutes);
 router.use("/cpu", cpuRouter);
 router.use("/storages", storageRouter);
-router.use("/power-supplies", powerSupplyRouter);
+router.use("/power_supplies", powerSupplyRouter);
 router.use("/monitors", monitorRouter);
 router.use("/gpu", gpuRoutes);
 router.use("/motherboard", motherboardRoutes);
 router.use("/case", caseRoutes);
 router.use("/memory", memoryRoutes);
-router.use("/caseFan", caseFanRoutes);
+router.use("/case_fan", caseFanRoutes);
 router.use("/payment", xenditRoutes);
 
 module.exports = router;

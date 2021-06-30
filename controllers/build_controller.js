@@ -422,10 +422,10 @@ class BuildController {
 			});
 	}
 
-	static patchName(req, res) {
-		const { name } = req.body;
+	static patchDetail(req, res) {
+		const { name, budget } = req.body;
 		const { id } = req.params;
-		Builds.update({ name }, id)
+		Builds.update({ name, budget }, id)
 			.then((data) => {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})

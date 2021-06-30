@@ -48,9 +48,8 @@ class Controller {
                         totalDocuments / limit
                     );
                     return filteredDocuments;
-                    // return Case.findAll(skippedData, limit);
                 } else if (motherboardSize == "Micro ATX") {
-                    filter = { $in: ["Micro ATX", "Mini ITX"] };
+                    filter = { $in: ["Micro ATX", "ATX"] };
                     let filteredDocuments = await Case.findCaseAgregated(
                         filter,
                         limit,

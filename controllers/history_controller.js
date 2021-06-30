@@ -54,6 +54,7 @@ class HistoryController {
       .then((data) => {
         let totalPrice = 0;
         let names = [];
+
         Object.keys(data.build).forEach((product) => {
           if (Array.isArray(data.build[product])) {
             data.build[product].forEach((el) => {

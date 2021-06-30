@@ -42,7 +42,7 @@ let newId = null;
 describe("Create", () => {
   test("Success Case | should send an object with key: _id, name, image, size, price, stock", (done) => {
     request(app)
-      .post("/caseFan")
+      .post("/case_fan")
       .set("access_token", access_token)
       .send(newProduct)
       .end((err, res) => {
@@ -59,7 +59,7 @@ describe("Create", () => {
   });
   test("Fail Case | Have to login first", (done) => {
     request(app)
-      .post("/caseFan")
+      .post("/case_fan")
       .send(newProduct)
       .end((err, res) => {
         if (err) done(err);
@@ -71,7 +71,7 @@ describe("Create", () => {
 
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
-      .post("/caseFan")
+      .post("/case_fan")
       .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
@@ -83,7 +83,7 @@ describe("Create", () => {
   });
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
-      .post("/caseFan")
+      .post("/case_fan")
       .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
@@ -98,7 +98,7 @@ describe("Create", () => {
 describe("Show all Case | Success Case", () => {
   test("Should send an object with keys data: [_id, name, image, size, price, stock] and howManyPages", (done) => {
     request(app)
-      .get("/caseFan")
+      .get("/case_fan")
       .query({ page: "1" })
       .end((err, res) => {
         if (err) return done(err);
@@ -114,7 +114,7 @@ describe("Show all Case | Success Case", () => {
   });
   test("Fail Case | should send a message invalid page number", (done) => {
     request(app)
-      .get("/caseFan")
+      .get("/case_fan")
       .query({ page: "0" })
       .end((err, res) => {
         if (err) return done(err);
@@ -130,7 +130,7 @@ describe("Show all Case | Success Case", () => {
 describe("Show One Case ", () => {
   test("Success Case || should send an array of objects with key:  _id, name, image, size, price, stock", (done) => {
     request(app)
-      .get(`/caseFan/${newId}`)
+      .get(`/case_fan/${newId}`)
       .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
@@ -145,7 +145,7 @@ describe("Show One Case ", () => {
   });
   test("Fail Case || should send a message", (done) => {
     request(app)
-      .get(`/caseFan/60d8937939db680d38b923c9`)
+      .get(`/case_fan/60d8937939db680d38b923c9`)
       .set("access_token", access_token)
       .end((err, res) => {
         if (err) return done(err);
@@ -159,7 +159,7 @@ describe("Show One Case ", () => {
 describe("Update Case", () => {
   test("Success Case | should send an object with message", (done) => {
     request(app)
-      .put(`/caseFan/${newId}`)
+      .put(`/case_fan/${newId}`)
       .set("access_token", access_token)
       .send({
         name: "TESTING EDIT",
@@ -177,7 +177,7 @@ describe("Update Case", () => {
   });
   test("Fail Case | Failed because of empty input", (done) => {
     request(app)
-      .put(`/caseFan/${newId}`)
+      .put(`/case_fan/${newId}`)
       .set("access_token", access_token)
       .send(errorCaseEmptyInput)
       .end((err, res) => {
@@ -189,7 +189,7 @@ describe("Update Case", () => {
   });
   test("Fail Case | Failed because of wrong input format", (done) => {
     request(app)
-      .put(`/caseFan/${newId}`)
+      .put(`/case_fan/${newId}`)
       .set("access_token", access_token)
       .send(errorCaseInputFormat)
       .end((err, res) => {
@@ -204,7 +204,7 @@ describe("Update Case", () => {
 describe("Delete Case | Success Case", () => {
   test("should send an object with message", (done) => {
     request(app)
-      .delete(`/caseFan/${newId}`)
+      .delete(`/case_fan/${newId}`)
       .set("access_token", access_token)
       .end((err, res) => {
         if (err) done(err);

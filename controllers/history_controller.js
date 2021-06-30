@@ -3,7 +3,7 @@ const History = require("../models/history");
 
 class HistoryController {
 	static createHistory(req, res) {
-		let doc = { user: req.currentUser, createdAt: Date.now(), shipment: false };
+		let doc = { user: req.currentUser, createdAt: Date.now(), shipmentStatus: false };
 
 		Build.findByPk(req.body.buildId)
 			.then((data) => {

@@ -55,10 +55,14 @@ class HistoryController {
 				let totalPrice = 0;
 				let names = [];
 
+				delete data.build["user"];
+				delete data.build["_id"];
+				delete data.build["budget"];
+				delete data.build["name"];
+
 				Object.keys(data.build).forEach((product) => {
 					if (Array.isArray(data.build[product])) {
 						data.build[product].forEach((el) => {
-							console.log(el.price.toLocaleString);
 							totalPrice += el.price;
 							names.push(/*html*/ `
               <tr>
@@ -96,9 +100,8 @@ class HistoryController {
             </tr>
               `);
 						});
-					} else if (product.toString() !== "_id") {
+					} else {
 						totalPrice += data.build[product].price;
-						console.log(data.build[product].price.toLocaleString);
 						names.push(/*html*/ `
               <tr>
               <td
@@ -697,7 +700,6 @@ class HistoryController {
           </body>
         </html>`,
 				};
-				console.log(totalPrice.toLocaleString);
 				transporter.sendMail(mailOptions, (err, data) => {
 					if (err) {
 						console.log(err, "err in sending email");

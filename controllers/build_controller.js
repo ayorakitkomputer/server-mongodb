@@ -39,7 +39,7 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				res.status(404).json({ message: err.message });
 			});
 	}
 
@@ -64,7 +64,8 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				if (err.message === "Motherboard not found") res.status(404).json({ message: err.message });
+				if (err.message === "Motherboard is not compatible") res.status(400).json({ message: err.message });
 			});
 	}
 
@@ -89,7 +90,8 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				if (err.message === "Memory not found") res.status(404).json({ message: err.message });
+				if (err.message === "Memory is not compatible") res.status(400).json({ message: err.message });
 			});
 	}
 
@@ -134,7 +136,10 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				if (err.message === "Storage not found") res.status(404).json({ message: err.message });
+				if (err.message === "Storage is not compatible") res.status(400).json({ message: err.message });
+				if (err.message === "Storages must be an Array") res.status(400).json({ message: err.message });
+				if (err.message === "Storage cannot more than 3") res.status(400).json({ message: err.message });
 			});
 	}
 
@@ -178,7 +183,10 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				if (err.message === "GPU not found") res.status(404).json({ message: err.message });
+				if (err.message === "GPU is not compatible") res.status(400).json({ message: err.message });
+				if (err.message === "GPUs must be an Array") res.status(400).json({ message: err.message });
+				if (err.message === "GPU cannot more than 3") res.status(400).json({ message: err.message });
 			});
 	}
 
@@ -193,17 +201,12 @@ class BuildController {
 				return Case.findById(req.body.caseId);
 			})
 			.then((caseData) => {
+				console.log(caseData, `ini case data hmm`);
 				const motherboardSize = buildData.motherboard.form_factor
 				const caseSize = caseData.form_factor
 				let doc = { case: caseData };
 				
 				if (!caseData) throw new Error("Case not found");
-
-				/**
-				 * Mini ITX
-				 * Micro ATX
-				 * ATX
-				 */
 
 				if (caseSize === 'ATX') {
 					if (motherboardSize === 'ATX' || motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
@@ -223,7 +226,9 @@ class BuildController {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				console.log(err,`ini di case controleler`);
+				if (err.message === "GPU not found") res.status(404).json({ message: err.message });
+				if (err.message === "GPU is not compatible") res.status(400).json({ message: err.message });
 			});
 	}
 

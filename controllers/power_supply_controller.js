@@ -1,6 +1,6 @@
 const Power_supply_Validator = require("../helpers/power_supply_validator");
 const Builds = require("../models/builds");
-const Power_supply = require("../models/Power_supply");
+const Power_supply = require("../models/power_supply");
 
 class Controller {
 	static async getPower_supply(req, res) {

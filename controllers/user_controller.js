@@ -67,7 +67,7 @@ class UserController {
             if (decode(password, data.password)) {
               const { _id, email, fullname, lastname } = data;
               const access_token = sign({ id: _id, email, fullname, lastname });
-              res.status(200).json({ access_token, id: _id });
+              res.status(200).json({ access_token, id: _id, email });
             } else {
               res.status(400).json({ message: "Invalid Password" });
             }

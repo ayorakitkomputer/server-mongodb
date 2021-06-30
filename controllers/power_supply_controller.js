@@ -30,7 +30,6 @@ class Controller {
 			.then(async (data) => {
 				let currentWattage = 0;
 				let skippedData = (page - 1) * limit;
-
 				currentWattage += data.cpu.tdp;
 				data.gpu.forEach((gpuData) => {
 					currentWattage += gpuData.tdp;

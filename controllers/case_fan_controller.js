@@ -2,42 +2,47 @@ const CaseFan = require("../models/case_fan");
 const caseFanValidation = require("../helpers/case_fan_validator");
 
 class Controller {
-  static showAllCaseFan(req, res) {
-    CaseFan.findAll()
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+  static async showAllCaseFan(req, res) {
+    let page = parseInt(req.query.page);
+    let limit = 10;
+    const documentsCount = await CaseFan.findDocumentsCount()
+    const howManyPages = Math.ceil(documentsCount / limit)
+
+    if (page <= 0) {
+      res
+        .status(404)
+        .json({ message: "invalid page number, should start with 1" });
+    } else {
+      let skippedData = (page - 1) * limit;
+      CaseFan.findAll(skippedData, limit)
+        .then((data) => {
+          res.status(200).json({ data, howManyPages });
+        });
+    }
   }
   static showOneCaseFan(req, res, next) {
     let id = req.params.id;
-    CaseFan.findById(id)
-      .then((data) => {
+    CaseFan.findById(id).then((data) => {
+      if (data === null) {
+        res.status(404).json({ message: `Data not found` });
+      } else {
         res.status(200).json(data);
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.message });
-      });
+      }
+    });
   }
   static addCaseFan(req, res, next) {
     let newCaseFan = {
       name: req.body.name,
       image: req.body.image,
       size: req.body.size,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
     const { validated, errors } = caseFanValidation(newCaseFan);
     if (validated) {
-      CaseFan.create(newCaseFan)
-        .then((data) => {
-          res.status(201).json(data.ops[0]);
-        })
-        .catch((err) => {
-          res.status(500).json({ message: err.message });
-        });
+      CaseFan.create(newCaseFan).then((data) => {
+        res.status(201).json(data.ops[0]);
+      });
     } else {
       res.status(400).json(errors);
     }
@@ -48,8 +53,8 @@ class Controller {
       name: req.body.name,
       image: req.body.image,
       size: req.body.size,
-      price: req.body.price,
-      stock: req.body.stock,
+      price: +req.body.price,
+      stock: +req.body.stock,
     };
 
     const { validated, errors } = caseFanValidation(editedCaseFan);

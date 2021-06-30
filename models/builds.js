@@ -8,7 +8,7 @@ class Builds {
 	}
 
 	static findByUser(UserId) {
-		return getDatabase().collection(collectionName).findOne({ "user.id": UserId });
+		return getDatabase().collection(collectionName).find({ "user.id": UserId }).toArray();
 	}
 
 	static findByPk(id) {
@@ -27,6 +27,12 @@ class Builds {
 		return getDatabase()
 			.collection(collectionName)
 			.deleteOne({ _id: ObjectId(id) });
+	}
+
+	static deleteKey(doc, id) {
+		return getDatabase()
+			.collection(collectionName)
+			.update({ _id: ObjectId(id) }, { $unset: doc });
 	}
 }
 

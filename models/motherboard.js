@@ -40,14 +40,6 @@ class Motherboard {
 			}
 		]).toArray()
   }
-	// static findBySocket(page, limit, socket) {
-	// 	return getDatabase()
-	// 		.collection(collectionName)
-	// 		.find({ socket })
-	// 		.skip(page)
-	// 		.limit(limit)
-	// 		.toArray();
-	// }
 	static create(payload) {
 		return getDatabase().collection(collectionName).insertOne(payload);
 	}

@@ -45,7 +45,7 @@ class UserController {
             }
           })
           .catch((err) => {
-            res.status(500).json({ message: err.message });
+            // res.status(500).json({ message: err.message });
           });
       } else {
         res
@@ -76,12 +76,12 @@ class UserController {
           }
         })
         .catch((err) => {
-          res.status(500).json({ message: err.message });
+          // res.status(500).json({ message: err.message });
         });
     } else {
-      res
-        .status(400)
-        .json({ message: "Oops there seems an error on your data types" });
+      // res
+      //   .status(400)
+      //   .json({ message: "Oops there seems an error on your data types" });
     }
   }
 }

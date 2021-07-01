@@ -53,7 +53,7 @@ class Controller {
           res.status(201).json(data.ops[0]);
         })
         .catch((err) => {
-          res.status(500).json({ message: "Server Error" });
+          // res.status(500).json({ message: "Server Error" });
         });
     }
   }
@@ -77,7 +77,7 @@ class Controller {
     } else {
       Storage.update(id, updatedStorage).then((data) => {
         if (data.matchedCount == 0) {
-          res.status(404).json({ message: `Data not Found` });
+          // res.status(404).json({ message: `Data not Found` });
         } else if (data.matchedCount == 1 && data.modifiedCount == 1) {
           res.status(200).json({ message: `Succesfully edited the Storage` });
         }
@@ -91,13 +91,13 @@ class Controller {
     Storage.destroy(id)
       .then((data) => {
         if (data.deletedCount == 0) {
-          res.status(404).json({ message: `Data not Found` });
+          // res.status(404).json({ message: `Data not Found` });
         } else if (data.deletedCount == 1) {
           res.status(200).json({ message: `Succesfully deleted the Storage` });
         }
       })
       .catch((err) => {
-        res.status(500).json({ message: err.message });
+        // res.status(500).json({ message: err.message });
       });
   }
 }

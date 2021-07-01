@@ -25,9 +25,13 @@ motherboard3 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM
 
 motherboard4 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM4","memory_type":"DDR4","form_factor":"Mini ITX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
 
+motherboard5 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM4","memory_type":"DDR3","form_factor":"Mini ITX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
+
 pcCase = {"name":"NZXT H510","form_factor":"ATX","stock":111,"price":1116181,"image":"https://images.tokopedia.net/img/cache/500-square/product-1/2017/11/12/24444250/24444250_34071435-6ddd-452f-9773-3c321eed07eb_700_700.png.webp"}
 
 pcCase2 = {"name":"NOT COMPATIBLE","form_factor":"Mini ITX","stock":69,"price":924781,"image":"https://tonixcomputer.co.id/wp-content/uploads/2020/05/Cooler-Master-Trooper-SE.png"}
+
+pcCase3 = {"name":"NOT COMPATIBLE","form_factor":"Micro ATX","stock":69,"price":924781,"image":"https://tonixcomputer.co.id/wp-content/uploads/2020/05/Cooler-Master-Trooper-SE.png"}
 
 gpu = {"manufacturer":"EVGA","name":"GeForce RTX 3090","price":35687806,"tdp":350,"stock":54,"image":"https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ampere/rtx-3090/geforce-rtx-3090-shop-630-d@2x.png"}
 
@@ -87,16 +91,19 @@ let motherboardId;
 let motherboardId2;
 let motherboardId3;
 let motherboardId4;
+let motherboardId5;
 let caseFanIds = []
 let gpuIds = []
 let storageIds = []
 let monitorIds = []
 let caseId;
 let caseId2;
+let caseId3;
 let powerSupplyId;
 let powerSupplyId2;
 let memoryId;
 let memoryId2;
+let totalWattage = 0
 
 beforeAll(async () => {
     await connect();
@@ -131,8 +138,11 @@ beforeAll(async () => {
 
     const motherboardData4 = await Motherboard.create(motherboard4)
     motherboardId4 = motherboardData4.ops[0]._id
+
+    const motherboardData5 = await Motherboard.create(motherboard5)
+    motherboardId5 = motherboardData5.ops[0]._id
     
-    const gpuData = await Gpu.create(gpu) // arraay
+    const gpuData = await Gpu.create(gpu)
     gpuIds.push(gpuData.ops[0]._id)
     
     const storageData = await Storage.create(storage)
@@ -141,11 +151,14 @@ beforeAll(async () => {
     const monitorData = await Monitor.create(cpu)
     monitorIds.push(monitorData.ops[0]._id)
     
-    const caseData = await Case.create(pcCase) // atx kan
+    const caseData = await Case.create(pcCase)
     caseId = caseData.ops[0]._id
 
-    const caseData2 = await Case.create(pcCase2) // ini ukuran beda
+    const caseData2 = await Case.create(pcCase2)
     caseId2 = caseData2.ops[0]._id
+
+    const caseData3 = await Case.create(pcCase3)
+    caseId3 = caseData3.ops[0]._id
     
     const caseFanDdata = await Case_Fan.create(case_fan)
     caseFanIds.push(caseFanDdata.ops[0]._id)
@@ -174,6 +187,8 @@ afterAll(async() => {
     await Storage.destroy(storageIds[0])
     await Monitor.destroy(monitorIds[0])
     await Case.destroy(caseId)
+    await Case.destroy(caseId2)
+    await Case.destroy(caseId3)
     await Case_Fan.destroy(caseFanIds[0])
     await Memory.destroy(memoryId)
     await Memory.destroy(memoryId2)
@@ -182,6 +197,8 @@ afterAll(async() => {
     await Motherboard.destroy(motherboardId)
     await Motherboard.destroy(motherboardId2)
     await Motherboard.destroy(motherboardId3)
+    await Motherboard.destroy(motherboardId4)
+    await Motherboard.destroy(motherboardId5)
 });
 
 describe("addBuild", () => {
@@ -214,6 +231,18 @@ describe("getById", () => {
                 done();
             });
     });
+    test("getAllByUserId Success Case || Should send all of the build of the current user", (done) => {
+        request(app)
+            .get(`/builds/`)
+            .set("access_token", access_token)
+            .end((err, res) => {
+                if (err) done(err);
+                
+                expect(res.status).toBe(200);
+                expect(res.body).toEqual(expect.any(Object));
+                done();
+            });
+    });
 });
 
 describe("patchCpu", () => {
@@ -240,6 +269,38 @@ describe("patchCpu", () => {
                 expect(res.body.message).toContain("CPU not found");
                 done();
             });
+    });
+});
+
+describe("getBySocket Motherboard", () => {
+    test("Success Case || Should send motherboad with the same socket as cpu", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .query({ page: "1" })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].pages[0]).toHaveProperty('total', expect.any(Number))
+                expect(res.body[0].data).toEqual(expect.any(Array))
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                expect(res.body[0].data[0].socket).toMatch('AM4');
+                done();
+            });
+    });
+    test("Fail Case || should send a message invalid page number", (done) => {
+        request(app)
+          .get(`/builds/${buildId}/motherboard`)
+          .query({ page: "0" })
+          .set('access_token', access_token)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).toBe(404);
+            expect(res.body.message).toContain(
+                "invalid page number, should start with 1"
+            );
+            done();
+          });
     });
 });
 
@@ -279,6 +340,74 @@ describe("patchMotherboard", () => {
                 expect(res.body.message).toContain(
                     "Motherboard is not compatible"
                 );
+                done();
+            });
+    });
+});
+
+describe("getAllByType Memory", () => {
+    test("Success Case || Should send memory equel to motherboad memory type", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/memory`)
+            .set("access_token", access_token)
+            .query({ page: "1" })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].pages[0]).toHaveProperty('total', expect.any(Number))
+                expect(res.body[0].data).toEqual(expect.any(Array))
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                expect(res.body[0].data[0].memory_type).toMatch('DDR4');
+                done();
+            });
+    });
+    test("Fail Case || should send a message invalid page number", (done) => {
+        request(app)
+          .get(`/builds/${buildId}/memory`)
+          .query({ page: "0" })
+          .set('access_token', access_token)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).toBe(404);
+            expect(res.body.message).toContain(
+                "invalid page number, should start with 1"
+            );
+            done();
+          });
+    });
+    test("Success Case || patching motherboard of DDR3 memory type", (done) => {
+        request(app)
+            .patch(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .send({ motherboardId: motherboardId5 })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Updated 1 document(s)");
+                done();
+            });
+    });
+    test("Success Case || query for matching memory for motherboard with memory type of DDR3", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/memory`)
+            .set("access_token", access_token)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                expect(res.body[0].data[0].memory_type).toMatch('DDR3');
+                done();
+            });
+    });
+    test("Success Case || patching motherboard back to DDR4 memory type", (done) => {
+        request(app)
+            .patch(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .send({ motherboardId })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Updated 1 document(s)");
                 done();
             });
     });
@@ -571,6 +700,71 @@ describe("patchCase", () => {
                 expect(res.body.message).toContain("Case is not compatible");
                 done();
             });
+    });
+    test("Fail Case || Case not compatible", (done) => { // ini latest nya
+        request(app)
+            .patch(`/builds/${buildId}/case`)
+            .set("access_token", access_token)
+            .send({ caseId: caseId3 })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(400);
+                expect(res.body.message).toContain("Case is not compatible");
+                done();
+            });
+    });
+});
+
+
+describe("getByWatt Power Supply", () => {
+    test("Success Case || Should send build data before choosing any power supply", (done) => {
+        request(app)
+            .get(`/builds/` + buildId)
+            .set("access_token", access_token)
+            .end((err, res) => {
+                if (err) done(err);
+                
+                expect(res.status).toBe(200);
+                expect(res.body).toHaveProperty("_id", buildId);
+                expect(res.body.user).toHaveProperty("id", expect.any(String));
+      
+                let totalTdpGpu = 0
+                res.body.gpu.forEach((gpu) => {
+                  totalTdpGpu = totalTdpGpu + gpu.tdp
+                })
+                
+                totalWattage = totalTdpGpu + res.body.cpu.tdp
+                done();
+            });
+    });
+    test("Success Case || Should send power supply with greater than equel wattage of the total watt of the build", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/power_supply`)
+            .set("access_token", access_token)
+            .query({ page: "1" })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].pages[0]).toHaveProperty('total', expect.any(Number))
+                expect(res.body[0].data).toEqual(expect.any(Array))
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                expect(res.body[0].data[0].wattage).toBeGreaterThanOrEqual(totalWattage);
+                done(); /// go back here
+            });
+    });
+    test("Fail Case || should send a message invalid page number", (done) => {
+        request(app)
+          .get(`/builds/${buildId}/power_supply`)
+          .query({ page: "0" })
+          .set('access_token', access_token)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).toBe(404);
+            expect(res.body.message).toContain(
+                "invalid page number, should start with 1"
+            );
+            done();
+          });
     });
 });
 

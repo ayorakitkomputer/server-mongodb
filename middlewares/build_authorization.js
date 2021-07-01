@@ -14,9 +14,9 @@ module.exports = (req, res, next) => {
         }
       })
       .catch((err) => {
-        res.status(500).json({ message: err.message });
+        // res.status(500).json({ message: err.message });
       });
   } else {
-    res.status(400).json({ message: "Page Not Found" });
+    // res.status(400).json({ message: "Page Not Found" });
   }
 };

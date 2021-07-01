@@ -27,7 +27,7 @@ class Controller {
 
 		const { id } = req.params;
 		if (page < 0 || page === 0) {
-			res.status(400).json({ message: "invalid page number, should start with 1" });
+			return res.status(404).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
 			.then(async (data) => {
@@ -44,16 +44,14 @@ class Controller {
 				filteredDocuments[0].pages[0].total =  Math.ceil(totalDocuments / limit)
 
 				return filteredDocuments
-
-				// return Power_supply.findAllByWatt(skippedData, limit, currentWattage);
 			})
 			.then((data) => {
 				if (data) res.status(200).json(data);
-				res.status(400).json({ message: "Data not found" });
+				// res.status(400).json({ message: "Data not found" });
 			})
-			.catch((err) => {
-				res.status(500).json({ message: err.message });
-			});
+			// .catch((err) => {
+			// 	res.status(500).json({ message: err.message });
+			// });
 	}
 
 	static getOnePower_supply(req, res) {
@@ -109,13 +107,13 @@ class Controller {
 			Power_supply.update(id, updatedPower_supply)
 				.then((data) => {
 					if (data.matchedCount == 0) {
-						res.status(404).json({ message: `Data not Found` });
+						// res.status(404).json({ message: `Data not Found` });
 					} else if (data.matchedCount == 1 && data.modifiedCount == 1) {
 						res.status(200).json({ message: `Succesfully edited the Power Supply` });
 					}
 				})
 				.catch((err) => {
-					res.status(500).json({ message: err.message });
+					// res.status(500).json({ message: err.message });
 				});
 		}
 	}
@@ -126,13 +124,13 @@ class Controller {
 		Power_supply.destroy(id)
 			.then((data) => {
 				if (data.deletedCount == 0) {
-					res.status(404).json({ message: `Data not Found` });
+					// res.status(404).json({ message: `Data not Found` });
 				} else if (data.deletedCount == 1) {
 					res.status(200).json({ message: `Succesfully deleted the Power Supply` });
 				}
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				// res.status(500).json({ message: err.message });
 			});
 	}
 }

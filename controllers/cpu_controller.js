@@ -33,7 +33,7 @@ class Controller {
         }
       })
       .catch((err) => {
-        res.status(500).json({ message: err.message });
+        // res.status(500).json({ message: err.message });
       });
   }
 
@@ -82,7 +82,7 @@ class Controller {
       Cpu.update(id, updatedCpu)
         .then((data) => {
           if (data.matchedCount == 0) {
-            res.status(404).json({ message: `Data not Found` });
+            // res.status(404).json({ message: `Data not Found` });
           } else if (data.matchedCount == 1 && data.modifiedCount == 1) {
             res.status(200).json({
               message: `Succesfully edited the CPU`,
@@ -90,7 +90,7 @@ class Controller {
           }
         })
         .catch((err) => {
-          res.status(500).json({ message: err.message });
+          // res.status(500).json({ message: err.message });
         });
     }
   }
@@ -107,7 +107,7 @@ class Controller {
         }
       })
       .catch((err) => {
-        res.status(500).json({ message: err.message });
+        // res.status(500).json({ message: err.message });
       });
   }
 }

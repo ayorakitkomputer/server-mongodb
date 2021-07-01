@@ -17,7 +17,7 @@ async function connect() {
         database = db;
         return db;
     } catch (error) {
-        console.log(error);
+        // console.log(error);
     }
 }
 

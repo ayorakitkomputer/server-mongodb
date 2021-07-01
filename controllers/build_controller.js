@@ -15,9 +15,9 @@ class BuildController {
 			.then((data) => {
 				res.status(200).json({ id: data.insertedId });
 			})
-			.catch((err) => {
-				res.status(500).json({ message: err.message });
-			});
+			// .catch((err) => {
+			// 	res.status(500).json({ message: err.message });
+			// });
 	}
 
 	static patchCpu(req, res) {
@@ -26,7 +26,7 @@ class BuildController {
 
 		Builds.findByPk(buildId)
 			.then((data) => {
-				if (!data) throw new Error("Build not found");
+				// if (!data) throw new Error("Build not found");
 				buildData = data;
 				return Cpu.findOne(req.body.cpuId);
 			})
@@ -207,15 +207,14 @@ class BuildController {
 				
 				if (caseSize === 'ATX') {
 					if (motherboardSize === 'ATX' || motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
-					else throw new Error("Case is not compatible");
+					// else throw new Error("Case is not compatible");
 
 				} else if (caseSize === 'Micro ATX') {
 					if (motherboardSize === 'Micro ATX' || motherboardSize === 'Mini ITX') return Builds.update(doc, buildId)
 					else throw new Error("Case is not compatible");
 
 				} else if (caseSize === "Mini ITX") {
-					if (motherboardSize === "Mini ITX")
-							return Builds.update(doc, buildId);
+					if (motherboardSize === "Mini ITX") return Builds.update(doc, buildId);
 					else throw new Error("Case is not compatible");
 					
 				}
@@ -361,9 +360,9 @@ class BuildController {
 			.then((data) => {
 				res.status(200).json(data);
 			})
-			.catch((err) => {
-				res.status(500).json({ message: err.message });
-			});
+			// .catch((err) => {
+			// 	res.status(500).json({ message: err.message });
+			// });
 	}
 
 	static getById(req, res) {
@@ -372,9 +371,9 @@ class BuildController {
 			.then((data) => {
 				res.status(200).json(data);
 			})
-			.catch((err) => {
-				res.status(500).json({ message: err.message });
-			});
+			// .catch((err) => {
+			// 	res.status(500).json({ message: err.message });
+			// });
 	}
 
 	static deleteBuild(req, res) {
@@ -390,7 +389,7 @@ class BuildController {
 				}
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				// res.status(500).json({ message: err.message });
 			});
 	}
 }

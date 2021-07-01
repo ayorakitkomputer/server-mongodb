@@ -44,12 +44,12 @@ class Case {
 		return getDatabase().collection(collectionName).insertOne(payload);
 	}
 	static findByFormFactor(page, limit, form_factor) {
-		return getDatabase()
-			.collection(collectionName)
-			.find({ form_factor })
-			.skip(page)
-			.limit(limit)
-			.toArray();
+		// return getDatabase()
+		// 	.collection(collectionName)
+		// 	.find({ form_factor })
+		// 	.skip(page)
+		// 	.limit(limit)
+		// 	.toArray();
 	}
 	static update(filter, updated) {
 		return getDatabase()

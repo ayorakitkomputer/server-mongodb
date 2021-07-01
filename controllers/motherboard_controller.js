@@ -27,7 +27,7 @@ class Controller {
 		const limit = 10;
 
 		if (page <= 0) {
-			res.status(400).json({ message: "invalid page number, should start with 1" });
+			return res.status(404).json({ message: "invalid page number, should start with 1" });
 		}
 		Builds.findByPk(id)
 			.then(async (data) => {
@@ -40,10 +40,10 @@ class Controller {
 			})
 			.then((data) => {
 				if (data) res.status(200).json(data);
-				else res.status(400).json({ message: "Data not found" });
+				// else res.status(400).json({ message: "Data not found" });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				// res.status(500).json({ message: err.message });
 			});
 	}
 	static showOneMotherboard(req, res, next) {
@@ -74,7 +74,7 @@ class Controller {
 					res.status(201).json(data.ops[0]);
 				})
 				.catch((err) => {
-					res.status(500).json({ message: err.message });
+					// res.status(500).json({ message: err.message });
 				});
 		} else {
 			res.status(400).json(errors);
@@ -100,7 +100,7 @@ class Controller {
 					res.status(200).json({ message: "sucessfully edited" });
 				})
 				.catch((err) => {
-					res.status(500).json({ message: err.message });
+					// res.status(500).json({ message: err.message });
 				});
 		} else {
 			res.status(400).json(errors);
@@ -113,7 +113,7 @@ class Controller {
 				res.status(200).json({ message: "succesfully deleted" });
 			})
 			.catch((err) => {
-				res.status(500).json({ message: err.message });
+				// res.status(500).json({ message: err.message });
 			});
 	}
 }

@@ -78,11 +78,10 @@ class Controller {
             })
             .then((data) => {
                 if (data) res.status(200).json(data);
-                else res.status(400).json({ message: "Data not found" });
+                // else res.status(400).json({ message: "Data not found" });
             })
             .catch((err) => {
-                console.log(err);
-                res.status(500).json({ message: err.message });
+                // res.status(500).json({ message: err.message });
             });
     }
     static showOneCase(req, res) {
@@ -129,9 +128,9 @@ class Controller {
                 .then(() => {
                     res.status(200).json({ message: "sucessfully edited" });
                 })
-                .catch((err) => {
-                    res.status(500).json({ message: err.message });
-                });
+                // .catch((err) => {
+                //     res.status(500).json({ message: err.message });
+                // });
         } else {
             res.status(400).json(errors);
         }
@@ -142,9 +141,9 @@ class Controller {
             .then(() => {
                 res.status(200).json({ message: "succesfully deleted" });
             })
-            .catch((err) => {
-                res.status(500).json({ message: err.message });
-            });
+            // .catch((err) => {
+            //     res.status(500).json({ message: err.message });
+            // });
     }
 }
 

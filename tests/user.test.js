@@ -74,6 +74,16 @@ afterAll((done) => {
 });
 
 describe("Register", () => {
+    test("Welcome | Show a Welcome message", (done) => {
+        request(app)
+            .get("/")
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Welcome");
+                done();
+            });
+    });
     test("Register | Success Case : should send an object with key: id, email, address, firstname, lastname", (done) => {
         request(app)
             .post("/register")

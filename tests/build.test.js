@@ -19,7 +19,11 @@ cpu = {"manufacturer":"Intel","name":"COMPATIBLE WITH MOTHERBOARD 2","socket":"A
 
 motherboard = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM4","memory_type":"DDR4","form_factor":"ATX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
 
-motherboard2 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"LG1200","memory_type":"DDR4","form_factor":"ATX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
+motherboard2 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"LG1200","memory_type":"DDR4","form_factor":"Micro ATX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
+
+motherboard3 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM4","memory_type":"DDR4","form_factor":"Micro ATX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
+
+motherboard4 = {"name":"TUF GAMING X570-PLUS","manufacturer":"Asus","socket":"AM4","memory_type":"DDR4","form_factor":"Mini ITX","price":3030341,"stock":84,"image":"https://dlcdnimgs.asus.com/websites/global/products/sqlhk1j3w9jgpcci/img/z490/kv/hero.png"}
 
 pcCase = {"name":"NZXT H510","form_factor":"ATX","stock":111,"price":1116181,"image":"https://images.tokopedia.net/img/cache/500-square/product-1/2017/11/12/24444250/24444250_34071435-6ddd-452f-9773-3c321eed07eb_700_700.png.webp"}
 
@@ -40,14 +44,6 @@ monitor = {"name":"VX2758-2KP-MHD","manufacturer":"ViewSonic","size":27,"price":
 powerSupply = {"name":"Corsair AXi","efficiency_rating":"80+ Titanium","wattage":1600,"price":13556862,"stock":109,"image":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/8/28/1361407/1361407_f7a960dd-16be-4b1e-84ef-310cc05100e3_750_558.png"}
 
 powerSupply2 = {"name":"Corsair AXi 2","efficiency_rating":"80+ Gold","wattage":300,"price":1111111,"stock":11,"image":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/8/28/1361407/1361407_f7a960dd-16be-4b1e-84ef-310cc05100e3_750_558.png"}
-
-
-
-/* 
-mobo nya itu am4, ddr4, ATX
-
-cpuId: "60d5ca9fc6e53a61d8e36f50", // data g ada
-*/
 
 const notFoundParts = {
     cpuId: "60d5cc1ec6e53a61d8e37018",
@@ -89,6 +85,8 @@ let unauthorizedToken;
 let cpuId;
 let motherboardId;
 let motherboardId2;
+let motherboardId3;
+let motherboardId4;
 let caseFanIds = []
 let gpuIds = []
 let storageIds = []
@@ -99,7 +97,6 @@ let powerSupplyId;
 let powerSupplyId2;
 let memoryId;
 let memoryId2;
-
 
 beforeAll(async () => {
     await connect();
@@ -128,6 +125,12 @@ beforeAll(async () => {
 
     const motherboardData2 = await Motherboard.create(motherboard2)
     motherboardId2 = motherboardData2.ops[0]._id
+
+    const motherboardData3 = await Motherboard.create(motherboard3)
+    motherboardId3 = motherboardData3.ops[0]._id
+
+    const motherboardData4 = await Motherboard.create(motherboard4)
+    motherboardId4 = motherboardData4.ops[0]._id
     
     const gpuData = await Gpu.create(gpu) // arraay
     gpuIds.push(gpuData.ops[0]._id)
@@ -163,120 +166,23 @@ beforeAll(async () => {
 
 let buildId = "";
 
-afterAll((done) => {
-    Users.destroy(userId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Users.destroy(userId2)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Cpu.destroy(cpuId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Gpu.destroy(gpuIds[0])
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Storage.destroy(storageIds[0])
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Monitor.destroy(monitorIds[0])
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Case.destroy(caseId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Case_Fan.destroy(caseFanIds[0])
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Memory.destroy(memoryId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Memory.destroy(memoryId2)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Power_Supply.destroy(powerSupplyId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Power_Supply.destroy(powerSupplyId2)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Motherboard.destroy(motherboardId)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
-
-    Motherboard.destroy(motherboardId2)
-        .then(() => {
-            done();
-        })
-        .catch((err) => {
-            done(err);
-        });
+afterAll(async() => {
+    await Users.destroy(userId)
+    await Users.destroy(userId2)
+    await Cpu.destroy(cpuId)
+    await Gpu.destroy(gpuIds[0])
+    await Storage.destroy(storageIds[0])
+    await Monitor.destroy(monitorIds[0])
+    await Case.destroy(caseId)
+    await Case_Fan.destroy(caseFanIds[0])
+    await Memory.destroy(memoryId)
+    await Memory.destroy(memoryId2)
+    await Power_Supply.destroy(powerSupplyId)
+    await Power_Supply.destroy(powerSupplyId2)
+    await Motherboard.destroy(motherboardId)
+    await Motherboard.destroy(motherboardId2)
+    await Motherboard.destroy(motherboardId3)
 });
-
 
 describe("addBuild", () => {
     test("Success Case || Should make a new build and send the build id", (done) => {
@@ -337,14 +243,6 @@ describe("patchCpu", () => {
     });
 });
 
-/* 
-
-mobo nya itu am4, ddr4, ATX
-mobo yg slh itu intel 1200
-cpu am4 tdp 95
-
-
-// */
 describe("patchMotherboard", () => {
     test("Success Case", (done) => {
         request(app)
@@ -531,6 +429,107 @@ describe("patchGpu", () => {
                 if (err) done(err);
                 expect(res.status).toBe(400);
                 expect(res.body.message).toContain("GPUs must be an Array");
+                done();
+            });
+    });
+});
+
+describe("getByFormFactor", () => {
+    test("Success Case", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/case`)
+            .set("access_token", access_token)
+            .query({ page: "1" })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].pages[0]).toHaveProperty('total', expect.any(Number))
+                expect(res.body[0].data).toEqual(expect.any(Array))
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                done();
+            });
+    });
+    test("Fail Case || should send a message invalid page number", (done) => {
+        request(app)
+          .get(`/builds/${buildId}/case`)
+          .query({ page: "0" })
+          .set('access_token', access_token)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).toBe(404);
+            expect(res.body.message).toContain(
+              "invalid page number, should start with 1"
+            );
+            done();
+          });
+    });
+    test("Success Case || query for matching case for motherboard size of ATX", (done) => {
+        request(app)
+            .get(`/builds/${buildId}/case`)
+            .set("access_token", access_token)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body[0].data[0]).toEqual(expect.any(Object))
+                expect(res.body[0].data[0].form_factor).toMatch(/^ATX$/);
+                done();
+            });
+    });
+    test("Success Case || changing motherboard", (done) => {
+        request(app)
+            .patch(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .send({ motherboardId: motherboardId3 })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Updated 1 document(s)");
+                done();
+            });
+    });
+    test("Success Case || query for matching case for motherboard size of Micro ATX", (done) => {
+        request(app)
+        .get(`/builds/${buildId}/case`)
+        .set("access_token", access_token)
+        .end((err, res) => {
+            if (err) done(err);
+            expect(res.status).toBe(200);
+            expect(res.body[0].data[1].form_factor).toMatch(/^ATX|Micro ATX$/);
+            done();
+        });
+    });
+    test("Success Case", (done) => {
+        request(app)
+            .patch(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .send({ motherboardId: motherboardId4 })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Updated 1 document(s)");
+                done();
+            });
+    });
+    test("Success Case || query for matching case for motherboard size of Mini ITX", (done) => {
+        request(app)
+        .get(`/builds/${buildId}/case`)
+        .set("access_token", access_token)
+        .end((err, res) => {
+            if (err) done(err);
+            expect(res.status).toBe(200);
+            expect(res.body[0].data[2].form_factor).toMatch(/^ATX|Micro ATX|Mini ITX$/);
+            done();
+        });
+    });
+    test("Success Case", (done) => {
+        request(app)
+            .patch(`/builds/${buildId}/motherboard`)
+            .set("access_token", access_token)
+            .send({ motherboardId })
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.status).toBe(200);
+                expect(res.body.message).toContain("Updated 1 document(s)");
                 done();
             });
     });

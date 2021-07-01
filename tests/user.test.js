@@ -60,6 +60,7 @@ let userNotFound = {
 
 beforeAll(async () => {
     await connect();
+    await Users.destroyEmail(userCustomer.email)
 }, 15000);
 
 afterAll((done) => {

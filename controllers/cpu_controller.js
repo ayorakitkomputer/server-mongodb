@@ -33,7 +33,6 @@ class Controller {
         }
       })
       .catch((err) => {
-        console.log(`kahboom`);
         res.status(500).json({ message: err.message });
       });
   }

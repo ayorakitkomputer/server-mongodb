@@ -31,6 +31,7 @@ class HistoryController {
 	static patchShipment(req, res) {
 		const { id } = req.params;
 		const doc = { shipmentStatus: req.body.shipmentStatus };
+		if (typeof doc.shipmentStatus !== 'boolean') return res.status(400).json({ message: 'there is a mistake on your input' });
 		History.update(doc, id)
 			.then((data) => {
 				res.status(200).json({ message: `Updated ${data.modifiedCount} document(s)` });

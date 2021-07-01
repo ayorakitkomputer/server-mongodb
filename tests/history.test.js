@@ -58,6 +58,8 @@ beforeAll(async () => {
   email = newUser.email;
   access_token = sign(newUser);
   unauthorizedToken = sign(newUser2);
+
+  // buat shipmetn jd false spy g error di test bawh
 }, 15000);
 
 afterAll(() => {
@@ -124,6 +126,45 @@ describe("Show History", () => {
         done();
       });
   });
+  test("Show all | Success Case : should send all of the History Transactions", (done) => {
+    request(app)
+      .get("/history/transactions")
+      .set("access_token", access_token)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.status).toBe(200);
+        expect(res.body[0].build).toHaveProperty("cpu", expect.any(Object));
+        expect(res.body[0].build).toHaveProperty("user", expect.any(Object));
+        expect(res.body[0].build).toHaveProperty(
+          "motherboard",
+          expect.any(Object)
+        );
+        expect(res.body).toEqual(expect.any(Array))
+        expect(res.body[0]).toEqual(expect.any(Object))
+        expect(res.body[0]).toHaveProperty("_id", expect.any(String));
+        expect(res.body[0]).toHaveProperty("user", expect.any(Object));
+        expect(res.body[0].user).toHaveProperty("id", expect.any(String));
+        expect(res.body[0].user).toHaveProperty("email", expect.any(String));
+        expect(res.body[0].user).toHaveProperty("firstname", expect.any(String));
+        expect(res.body[0].user).toHaveProperty("lastname", expect.any(String));
+        expect(res.body[0].user).toHaveProperty("address", expect.any(String));
+        expect(res.body[0].user).toHaveProperty("role", expect.any(String));
+        expect(res.body[0]).toHaveProperty("createdAt", expect.any(Number));
+        expect(res.body[0].build).toHaveProperty("_id", expect.any(String));
+        expect(res.body[0].build).toHaveProperty("storage", expect.any(Array));
+        expect(res.body[0].build).toHaveProperty("gpu", expect.any(Array));
+        expect(res.body[0].build).toHaveProperty("memory", expect.any(Object));
+        expect(res.body[0].build).toHaveProperty("case", expect.any(Object));
+        expect(res.body[0].build).toHaveProperty("motherboard", expect.any(Object));
+        expect(res.body[0].build).toHaveProperty(
+          "powerSupply",
+          expect.any(Object)
+        );
+        expect(res.body[0]).toHaveProperty("shipmentStatus", expect.any(Boolean));
+        done();
+      });
+  });
   test("Show One | Success Case : should send one history", (done) => {
     request(app)
       .get(`/history/${historyId}`)
@@ -161,6 +202,37 @@ describe("Show History || Fail Case", () => {
 
         expect(res.status).toBe(400);
         expect(res.body.message).toBe("Unauthorized");
+
+        done();
+      });
+  });
+});
+
+describe("Patch Shipment|| Success Case", () => {
+  test("Patch Shipment | Should change the shipment status", (done) => {
+    request(app)
+      .patch(`/history/transactions/${historyId}`)
+      .set("access_token", access_token)
+      .send({ shipmentStatus: true })
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe("Updated 1 document(s)");
+
+        done();
+      });
+  });
+  test("Fail Case | Should send error when the changing shipment status", (done) => {
+    request(app)
+      .patch(`/history/transactions/${historyId}`)
+      .set("access_token", access_token)
+      .send({ shipmentStatus: 'test' })
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe("there is a mistake on your input");
 
         done();
       });

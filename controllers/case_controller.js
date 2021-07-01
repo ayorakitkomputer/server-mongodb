@@ -27,7 +27,7 @@ class Controller {
         let skippedData = (page - 1) * limit;
 
         if (page <= 0)
-            res.status(400).json({
+            return res.status(404).json({
                 message: "invalid page number, should start with 1",
             });
 
@@ -81,6 +81,7 @@ class Controller {
                 else res.status(400).json({ message: "Data not found" });
             })
             .catch((err) => {
+                console.log(err);
                 res.status(500).json({ message: err.message });
             });
     }

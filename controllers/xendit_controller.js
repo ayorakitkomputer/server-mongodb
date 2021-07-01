@@ -13,6 +13,8 @@ class XenditController {
 				should_send_email: true,
 				reminder_time_unit: "hours",
 				reminder_time: "1",
+				success_redirect_url: "https://ayorakitkomputer.web.app/",
+				failure_redirect_url: "https://ayorakitkomputer.web.app/",
 			},
 			{
 				auth: {
